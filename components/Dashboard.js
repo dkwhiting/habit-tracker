@@ -1,38 +1,22 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { games, colors } from '../data'
+import GameTile from './GameTile'
 
 const Dashboard = () => {
+  const [expandedTile, setExpandedTile] = useState(null)
+
   return (
-    <View>
-      <ScrollView>
-        {games.map((activity, i) =>{
+    <ScrollView style={{height: '100%'}}>
+        <View style={{display: 'flex', flexDirection: 'column', gap: 5, padding: 5}}>
+        {games.map((game, index) =>{
           return(
-            <View key={i} style={{backgroundColor: colors[i]}}>
-              <View style={styles.activityTile}>
-                <Text>{activity.name}</Text>
-                <Text> {activity.players.length}</Text>
-              </View>
-            </View>
+            <GameTile key={game.id} game={game} index={index} expandedTile={expandedTile} setExpandedTile={setExpandedTile} />
           )
         })}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  colorContainer: {
-    marginTop: 50,
-  },
-  activityTile: {
-    margin: 10,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '95%'
-  }
-});
-
 
 export default Dashboard

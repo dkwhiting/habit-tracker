@@ -24,23 +24,28 @@ export const activities = [
 
 export const games = [
   {
+    id: 1,
     name: 'Nertz',
     players: [
-      {name: 'Dallin', score: 0}, 
-      {name: 'Abbey', score: 0}, 
+      {name: 'Dallin', score: 20}, 
+      {name: 'Abbey', score: 100}, 
       {name: 'Chris', score: 0}, 
-      {name: 'Annabelle', score: 0}],
+      {name: 'Annabelle', score: 80}],
     created: 'Today',
+    highestWins: true
   },
   {
+    id: 2,
     name: 'Bananagrams',
     players: [
       {name: 'Dallin', score: 1}, 
       {name: 'Abbey', score: 2},
     ], 
     created: 'Yesterday',
+    highestWins: true
   },
   {
+    id: 3,
     name: 'Quixx',
     players: [
       {name: 'Dallin', score: 0}, 
@@ -51,6 +56,7 @@ export const games = [
       {name: 'Nate', score: 0},
     ], 
     created: 'Yesterday',
+    highestWins: true
   },
 ]
 
