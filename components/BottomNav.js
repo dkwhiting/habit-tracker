@@ -7,7 +7,10 @@ const Tab = createBottomTabNavigator();
 function BottomNav() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Dashboard" component={Dashboard} />
+      <Tab.Screen 
+        name="Dashboard"
+        component={Dashboard} 
+        />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );
