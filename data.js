@@ -61,8 +61,8 @@ export const games = [
 ]
 
 export const colors = [
-  '#06d6a0',
-  '#ef476f',
-  '#1b9aaa',
-  '#ffc43d'
+  '6, 214, 160',
+  '239, 71, 111',
+  '27, 154, 170',
+  '255, 196, 61'
 ]
