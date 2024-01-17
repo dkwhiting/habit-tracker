@@ -1,14 +1,13 @@
 import * as React from "react"
 import Svg, { SvgProps, Path, Circle } from "react-native-svg"
 
-const SilverMedal = (props: SvgProps) => (
+const SilverMedal = (SvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     xmlSpace="preserve"
     width={30}
     height={30}
     viewBox="0 0 494.4 494.4"
-    {...props}
   >
     <Path
       d="M247.2 494.4c-132 0-240-108-240-240s108-240 240-240 240 108 240 240-108 240-240 240z"

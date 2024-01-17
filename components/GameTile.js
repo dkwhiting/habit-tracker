@@ -4,18 +4,40 @@ import { colors } from '../data'
 import { Button, Icon } from 'react-native-elements'
 import GameTileLeaders from './GameTileLeaders'
 
+
+
 const GameTile = ({game, index, expandedTile, setExpandedTile}) => {
   const expandAnim = useRef(new Animated.Value(50)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  
+  const colorCalc = (index)=> {
+    if (index + 1 > 4) {
+      return colorCalc(index - 4)
+    }
+    return index
+  }
+
   const fadeIn = () => {
     // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(expandAnim, {
-      toValue: 200,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
+    if (game.players.length >= 3){
+      Animated.timing(expandAnim, {
+        toValue: 225,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    } else if (game.players.length === 2) {
+      Animated.timing(expandAnim, {
+        toValue: 190,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(expandAnim, {
+        toValue: 155,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
 
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -48,17 +70,21 @@ const GameTile = ({game, index, expandedTile, setExpandedTile}) => {
 }, [expandedTile])
 
   return (
-
-
     <Pressable
-      style={{backgroundColor: `rgb(${colors[index]})`, borderRadius: 10, overflow: 'hidden'}} 
-      onPress={()=>{setExpandedTile(game.id)}}
+      style={{backgroundColor: `rgb(${colors[colorCalc(index)]})`, borderRadius: 10, overflow: 'hidden'}} 
+      onPress={()=>{
+        if (expandedTile !== game.id){
+          setExpandedTile(game.id)
+        } else {
+          setExpandedTile(null)
+
+        }
+      }}
       >
     <Animated.View
         style={{height: expandAnim,}}>
-      <View style={{backgroundColor: 'rgba(255, 255, 255, 0.05)', width: 500, height: 500, transform: 'rotate(135deg)', zIndex: -999, position: 'absolute', left: -350, top: -300}}>
-
-      </View>
+      <View style={{backgroundColor: 'rgba(255, 255, 255, 0.075)', width: 500, height: 500, transform: 'rotate(135deg)', zIndex: -999, position: 'absolute', left: -350, top: -300}} />
+      <View style={{backgroundColor: 'rgba(255, 255, 255, 0.075)', width: 500, height: 500, transform: 'rotate(135deg)', zIndex: -999, position: 'absolute', right: -375, bottom: -400}} />
       <View style={styles.activityTile}>
         <Text>{game.name}</Text>
         <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
@@ -71,6 +97,10 @@ const GameTile = ({game, index, expandedTile, setExpandedTile}) => {
         </View>
       </View>
       <Animated.View style={{display: 'flex', flex: 1, flexDirection: 'column', paddingLeft: 10, paddingBottom: 10, paddingRight: 10, gap: 5, opacity: fadeAnim}}>
+        <View style={{display: 'flex', flexDirection: 'row', paddingBottom: 5, width: '80%'}}>
+          <Text style={{flex: 1}}>Started: {game.created}</Text>
+          <Text style={{flex: 1}}>Last Played:</Text>
+        </View>
           {game.players.sort((a, b)=>{
             if (game.highestWins){
               return b.score-a.score

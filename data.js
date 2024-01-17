@@ -46,6 +46,29 @@ export const games = [
   },
   {
     id: 3,
+    name: 'Scrabble',
+    players: [
+      {name: 'Abbey', score: 2},
+    ], 
+    created: 'Yesterday',
+    highestWins: true
+  },
+  {
+    id: 4,
+    name: 'Quixx',
+    players: [
+      {name: 'Dallin', score: 0}, 
+      {name: 'Abbey', score: 0},
+      {name: 'Annabelle', score: 0},
+      {name: 'Chris', score: 0},
+      {name: 'Lucy', score: 0},
+      {name: 'Nate', score: 0},
+    ], 
+    created: 'Yesterday',
+    highestWins: true
+  },
+  {
+    id: 5,
     name: 'Quixx',
     players: [
       {name: 'Dallin', score: 0}, 
