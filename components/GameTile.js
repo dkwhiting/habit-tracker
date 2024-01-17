@@ -77,7 +77,6 @@ const GameTile = ({game, index, expandedTile, setExpandedTile}) => {
           setExpandedTile(game.id)
         } else {
           setExpandedTile(null)
-
         }
       }}
       >
@@ -110,7 +109,7 @@ const GameTile = ({game, index, expandedTile, setExpandedTile}) => {
           .slice(0, 3)
           .map((player, index)=>{
             return (
-              <GameTileLeaders player={player} index={index} />
+              <GameTileLeaders key={index} player={player} index={index} />
               )
             })}
           <Button 

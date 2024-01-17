@@ -8,13 +8,25 @@ const Dashboard = () => {
 
   return (
     <ScrollView style={{height: '100%'}}>
-      <Text style={{fontSize: '24px', padding: 5}}>In Progress</Text>
-        <View style={{display: 'flex', flexDirection: 'column', gap: 5, padding: 5}}>
-        {games.map((game, index) =>{
-          return(
-            <GameTile key={game.id} game={game} index={index} expandedTile={expandedTile} setExpandedTile={setExpandedTile} />
-          )
-        })}
+      <Text style={{fontSize: '24px', padding: 5}}>Open Games</Text>
+      <View style={{display: 'flex', flexDirection: 'column', gap: 5, padding: 5}}>
+      {games
+      .filter((game) => !game.completed)
+      .map((game, index) =>{
+        return(
+          <GameTile key={game.id} game={game} index={index} expandedTile={expandedTile} setExpandedTile={setExpandedTile} />
+        )
+      })}
+      </View>
+      <Text style={{fontSize: '24px', padding: 5}}>Completed Games</Text>
+      <View style={{display: 'flex', flexDirection: 'column', gap: 5, padding: 5}}>
+      {games
+      .filter((game) => game.completed)
+      .map((game, index) =>{
+        return(
+          <GameTile key={game.id} game={game} index={index} expandedTile={expandedTile} setExpandedTile={setExpandedTile} />
+        )
+      })}
       </View>
     </ScrollView>
   )

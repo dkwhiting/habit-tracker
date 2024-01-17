@@ -32,7 +32,8 @@ export const games = [
       {name: 'Chris', score: 0}, 
       {name: 'Annabelle', score: 80}],
     created: 'Today',
-    highestWins: true
+    highestWins: true,
+    completed: false
   },
   {
     id: 2,
@@ -42,7 +43,8 @@ export const games = [
       {name: 'Abbey', score: 2},
     ], 
     created: 'Yesterday',
-    highestWins: true
+    highestWins: true,
+    completed: false
   },
   {
     id: 3,
@@ -51,7 +53,8 @@ export const games = [
       {name: 'Abbey', score: 2},
     ], 
     created: 'Yesterday',
-    highestWins: true
+    highestWins: true,
+    completed: false
   },
   {
     id: 4,
@@ -65,21 +68,23 @@ export const games = [
       {name: 'Nate', score: 0},
     ], 
     created: 'Yesterday',
-    highestWins: true
+    highestWins: true,
+    completed: false
   },
   {
     id: 5,
     name: 'Quixx',
     players: [
-      {name: 'Dallin', score: 0}, 
-      {name: 'Abbey', score: 0},
-      {name: 'Annabelle', score: 0},
-      {name: 'Chris', score: 0},
-      {name: 'Lucy', score: 0},
+      {name: 'Dallin', score: 100}, 
+      {name: 'Abbey', score: 80},
+      {name: 'Annabelle', score: 40},
+      {name: 'Chris', score: 50},
+      {name: 'Lucy', score: 30},
       {name: 'Nate', score: 0},
     ], 
     created: 'Yesterday',
-    highestWins: true
+    highestWins: true,
+    completed: true
   },
 ]
 
