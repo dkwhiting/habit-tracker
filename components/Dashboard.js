@@ -8,7 +8,7 @@ const Dashboard = () => {
 
   return (
     <ScrollView style={{height: '100%'}}>
-      <Text style={{fontSize: '24px', padding: 5}}>Open Games</Text>
+      <Text style={{fontSize: 24, padding: 5}}>Open Games</Text>
       <View style={{display: 'flex', flexDirection: 'column', gap: 5, padding: 5}}>
       {games
       .filter((game) => !game.completed)
@@ -18,7 +18,7 @@ const Dashboard = () => {
         )
       })}
       </View>
-      <Text style={{fontSize: '24px', padding: 5}}>Completed Games</Text>
+      <Text style={{fontSize: 24, padding: 5}}>Completed Games</Text>
       <View style={{display: 'flex', flexDirection: 'column', gap: 5, padding: 5}}>
       {games
       .filter((game) => game.completed)
