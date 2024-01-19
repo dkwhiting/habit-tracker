@@ -1,21 +1,15 @@
-import React, {useState} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import BottomNav from './components/BottomNav';
-import Login from './components/Login';
+import React from 'react';
+import store from './store';
+import { Provider } from 'react-redux';
+import Main from './components/Main';
 
 const App = () => {
-  const [user, setUser] = useState('user')
 
   return (
-    <>
-    {!user
-      ? <Login />
-      : <NavigationContainer>
-          <BottomNav />
-        </NavigationContainer>
-    }
-    </>
-  );
+    <Provider store={store}>
+      <Main />
+    </Provider>
+  )
 };
 
 export default App
