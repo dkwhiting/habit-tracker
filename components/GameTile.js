@@ -113,7 +113,7 @@ const GameTile = ({game, index, expandedTile, setExpandedTile}) => {
               )
             })}
           <Button 
-            title="Resume"
+            title="Resume Game"
             color="black"
             />
         </Animated.View>

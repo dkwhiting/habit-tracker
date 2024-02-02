@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
-import { games, colors } from '../data'
+import { games } from '../data'
 import GameTile from './GameTile'
 
 const Dashboard = () => {
