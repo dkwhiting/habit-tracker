@@ -1,13 +1,21 @@
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GameTile from './GameTile';
 import { useSelector } from 'react-redux';
 import { Iconify } from 'react-native-iconify';
+import { useFetchAllGamesQuery } from '../store/apiSlice';
 
 const Dashboard = () => {
 	const [expandedTile, setExpandedTile] = useState(null);
-	const games = useSelector((state) => state.games.value);
-	const [sortAscending, setSortAscending] = useState(true);
+	const [sortAscending, setSortAscending] = useState(false);
+	const [games, setGames] = useState([]);
+	const { data, error, isLoading } = useFetchAllGamesQuery(
+		'WhmxUY9EbUOzApjcpladJlaPOGW2'
+	);
+
+	// useEffect(() => {
+	// 	console.log(data);
+	// }, [data]);
 
 	return (
 		<ScrollView style={{ height: '100%' }}>
@@ -39,43 +47,47 @@ const Dashboard = () => {
 			<View
 				style={{ display: 'flex', flexDirection: 'column', gap: 5, padding: 5 }}
 			>
-				{games
-					.filter((game) => !game.completed)
-					.sort((a, b) => {
-						if (sortAscending) {
-							return a.created - b.created;
-						}
-						return b.created - a.created;
-					})
-					.map((game, index) => {
-						return (
-							<GameTile
-								key={game.id}
-								game={game}
-								index={index}
-								expandedTile={expandedTile}
-								setExpandedTile={setExpandedTile}
-							/>
-						);
-					})}
+				{data?.length > 0
+					? data
+							.filter((game) => !game.completed)
+							.sort((a, b) => {
+								if (sortAscending) {
+									return a.id - b.id;
+								}
+								return b.id - a.id;
+							})
+							.map((game, index) => {
+								return (
+									<GameTile
+										key={game.id}
+										game={game}
+										index={index}
+										expandedTile={expandedTile}
+										setExpandedTile={setExpandedTile}
+									/>
+								);
+							})
+					: null}
 			</View>
 			<Text style={{ fontSize: 24, padding: 5 }}>Completed Games</Text>
 			<View
 				style={{ display: 'flex', flexDirection: 'column', gap: 5, padding: 5 }}
 			>
-				{games
-					.filter((game) => game?.completed)
-					.map((game, index) => {
-						return (
-							<GameTile
-								key={game.id}
-								game={game}
-								index={index}
-								expandedTile={expandedTile}
-								setExpandedTile={setExpandedTile}
-							/>
-						);
-					})}
+				{data?.length > 0
+					? data
+							.filter((game) => game?.completed)
+							.map((game, index) => {
+								return (
+									<GameTile
+										key={game.id}
+										game={game}
+										index={index}
+										expandedTile={expandedTile}
+										setExpandedTile={setExpandedTile}
+									/>
+								);
+							})
+					: null}
 			</View>
 		</ScrollView>
 	);

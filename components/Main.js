@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 const Main = () => {
 	const [user, setUser] = useState('user');
-	const games = useSelector((state) => state.games.value);
 
 	return (
 		<>

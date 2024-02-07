@@ -1,10 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from './counterSlice'
-import gameReducer from './gameSlice'
+import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './counterSlice';
+import gameReducer from './gameSlice';
+import { firestoreApi } from './apiSlice';
 
 export default configureStore({
-  reducer: {
-    counter: counterReducer,
-    games: gameReducer
-  },
-})
+	reducer: {
+		[firestoreApi.reducerPath]: firestoreApi.reducer,
+	},
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware().concat(firestoreApi.middleware),
+});

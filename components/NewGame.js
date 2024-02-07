@@ -6,43 +6,49 @@ import { addGame } from '../store/gameSlice';
 import PlayerSelectTile from './PlayerSelectTile';
 import { colorCalc, colors, playerIcons } from '../data';
 import { Iconify } from 'react-native-iconify';
+import { useAddNewGameMutation } from '../store/apiSlice';
 
 const NewGame = () => {
-	const dispatch = useDispatch();
 	const [name, setName] = useState('');
 	const [players, setPlayers] = useState([
 		{
 			name: 'Dallin',
 			color: colors[0],
-			icon: (
-				<Iconify
-					icon="game-icons:chewed-skull"
-					size={35}
-				/>
-			),
+			score: 0,
 		},
 	]);
 	const [newPlayer, setNewPlayer] = useState('');
 	const [highestWins, setHighestWins] = useState(true);
 	const [error, setError] = useState('');
+	const [
+		addGame, // This is the mutation trigger
+		{ isLoading: isUpdating }, // This is the destructured mutation result
+	] = useAddNewGameMutation();
 
-	const body = {
-		name,
-		players,
-		highestWins,
-		created: Date.now().toString().slice(0, 10).replace(/-/g, ''),
-		completed: false,
-	};
-
-	const handleSubmit = () => {
-		if (!name) {
-			setError('Name can not be left blank');
+	const handleSubmit = async () => {
+		try {
+			if (!name) {
+				setError('Name can not be left blank');
+			} else if (players.length < 1) {
+				setError('You must add at least one player');
+			} else {
+				const date = new Date();
+				const body = {
+					name,
+					players,
+					highestWins,
+					created: date.toISOString().slice(0, 10).replace(/-/g, ''),
+					completed: false,
+				};
+				console.log('THIS IS BODY', body);
+				await addGame({
+					userId: 'WhmxUY9EbUOzApjcpladJlaPOGW2',
+					gameId: Date.now().toString(),
+					body,
+				});
+			}
+		} catch (error) {
 			console.log(error);
-		} else if (players.length < 1) {
-			setError('You must add at least one player');
-			console.log(error);
-		} else {
-			dispatch(addGame(body));
 		}
 	};
 
@@ -52,7 +58,10 @@ const NewGame = () => {
 			{
 				name: newPlayer,
 				color: colors[colorCalc(players.length)],
-				icon: playerIcons[Math.floor(Math.random() * playerIcons.length - 1)],
+				icon: playerIcons[
+					Math.floor(Math.random() * playerIcons.length - 1)
+				].toString(),
+				score: '0',
 			},
 		]);
 		setNewPlayer('');

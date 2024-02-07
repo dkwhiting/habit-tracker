@@ -3,11 +3,15 @@ import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { colorCalc, colors } from '../data';
 import { Button, Icon } from 'react-native-elements';
 import GameTileLeaders from './GameTileLeaders';
+import { dateToString } from '../utils';
 
-const GameTile = ({ game, index, expandedTile, setExpandedTile }) => {
+const GameTile = ({ key, game, index, expandedTile, setExpandedTile }) => {
 	const expandAnim = useRef(new Animated.Value(50)).current;
 	const fadeAnim = useRef(new Animated.Value(0)).current;
-	const gamePlayers = [...game.players];
+	const gamePlayers = [...game?.players];
+	const date = new Date();
+	const today = date.toISOString().slice(0, 10).replace(/-/g, '');
+	const tomorrow = date.toISOString().slice(0, 10).replace(/-/g, '') + 1;
 
 	const fadeIn = () => {
 		// Will change fadeAnim value to 1 in 5 seconds
@@ -68,6 +72,7 @@ const GameTile = ({ game, index, expandedTile, setExpandedTile }) => {
 				borderRadius: 10,
 				overflow: 'hidden',
 			}}
+			key={key}
 			onPress={() => {
 				if (expandedTile !== game.id) {
 					setExpandedTile(game.id);
@@ -138,7 +143,14 @@ const GameTile = ({ game, index, expandedTile, setExpandedTile }) => {
 							width: '80%',
 						}}
 					>
-						<Text style={{ flex: 1 }}>{game.created}</Text>
+						<Text style={{ flex: 1 }}>
+							Created:{' '}
+							{game.created === today
+								? 'Today'
+								: game.created === tomorrow
+								? 'Tomorrow'
+								: dateToString(game.created)}
+						</Text>
 						<Text style={{ flex: 1 }}>Last Played:</Text>
 					</View>
 					{gamePlayers

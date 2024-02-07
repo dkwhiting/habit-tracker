@@ -6,7 +6,7 @@ export const gameSlice = createSlice({
 	initialState: {
 		value: [
 			{
-				id: 1,
+				id: 1707326440464,
 				name: 'Nertz',
 				players: [
 					{ name: 'Dallin', score: 20 },
@@ -19,7 +19,7 @@ export const gameSlice = createSlice({
 				completed: false,
 			},
 			{
-				id: 2,
+				id: 1707326440463,
 				name: 'Bananagrams',
 				players: [
 					{ name: 'Dallin', score: 1 },
@@ -30,7 +30,7 @@ export const gameSlice = createSlice({
 				completed: false,
 			},
 			{
-				id: 3,
+				id: 1707326440462,
 				name: 'Scrabble',
 				players: [{ name: 'Abbey', score: 2 }],
 				created: '20240101',
@@ -38,7 +38,7 @@ export const gameSlice = createSlice({
 				completed: false,
 			},
 			{
-				id: 4,
+				id: 1707326440461,
 				name: 'Quixx',
 				players: [
 					{ name: 'Dallin', score: 0 },
@@ -53,7 +53,7 @@ export const gameSlice = createSlice({
 				completed: false,
 			},
 			{
-				id: 5,
+				id: 1707326440460,
 				name: 'Quixx',
 				players: [
 					{ name: 'Dallin', score: 100 },
