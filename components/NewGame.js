@@ -30,7 +30,7 @@ const NewGame = () => {
 		name,
 		players,
 		highestWins,
-		created: Date.now(),
+		created: Date.now().toString().slice(0, 10).replace(/-/g, ''),
 		completed: false,
 	};
 
