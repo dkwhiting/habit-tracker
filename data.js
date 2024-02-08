@@ -1,4 +1,31 @@
 import { Iconify } from 'react-native-iconify';
+import {
+	mdiCardsClub,
+	mdiCardsHeart,
+	mdiCardsDiamond,
+	mdiCardsSpade,
+	mdiBomb,
+	mdiBottleTonicSkull,
+	mdiBoomerang,
+	mdiChessBishop,
+	mdiChessKing,
+	mdiChessQueen,
+	mdiChessPawn,
+	mdiChessKnight,
+	mdiChessRook,
+	mdiGhost,
+	mdiGoogleDownasaur,
+	mdiOcarina,
+	mdiOneUp,
+	mdiPacMan,
+	mdiPokeball,
+	mdiSkull,
+	mdiStarFace,
+	mdiWizardHat,
+	mdiSword,
+	mdiTriforce,
+	mdiSpaceInvaders,
+} from '@mdi/js';
 
 export const activities = [
 	{
@@ -94,6 +121,34 @@ export const colors = [
 	'239, 71, 111',
 	'27, 154, 170',
 	'255, 196, 61',
+];
+
+export const icons = [
+	{ name: 'cards-club', type: 'material-community' },
+	{ name: 'cards-heart', type: 'material-community' },
+	{ name: 'cards-diamond', type: 'material-community' },
+	{ name: 'cards-spade', type: 'material-community' },
+	{ name: 'bomb', type: 'material-community' },
+	{ name: 'bottle-tonic-skull', type: 'material-community' },
+	{ name: 'boomerang', type: 'material-community' },
+	{ name: 'chess-bishop', type: 'material-community' },
+	{ name: 'chess-king', type: 'material-community' },
+	{ name: 'chess-queen', type: 'material-community' },
+	{ name: 'chess-bishop', type: 'material-community' },
+	{ name: 'chess-rook', type: 'material-community' },
+	{ name: 'chess-pawn', type: 'material-community' },
+	{ name: 'ghost', type: 'material-community' },
+	{ name: 'google-downasaur', type: 'material-community' },
+	{ name: 'ocarina', type: 'material-community' },
+	{ name: 'one-up', type: 'material-community' },
+	{ name: 'pac-man', type: 'material-community' },
+	{ name: 'pokeball', type: 'material-community' },
+	{ name: 'skull', type: 'material-community' },
+	{ name: 'star-face', type: 'material-community' },
+	{ name: 'wizard-hat', type: 'material-community' },
+	{ name: 'sword', type: 'material-community' },
+	{ name: 'triforce', type: 'material-community' },
+	{ name: 'space-invaders', type: 'material-community' },
 ];
 
 export const playerIcons = [

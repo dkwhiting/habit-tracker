@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Switch } from 'react-native-elements';
 import { addGame } from '../store/gameSlice';
 import PlayerSelectTile from './PlayerSelectTile';
-import { colorCalc, colors, playerIcons } from '../data';
+import { colorCalc, colors, icons, playerIcons } from '../data';
 import { Iconify } from 'react-native-iconify';
 import { useAddNewGameMutation } from '../store/apiSlice';
 
@@ -15,6 +15,7 @@ const NewGame = () => {
 			name: 'Dallin',
 			color: colors[0],
 			score: 0,
+			icon: { name: 'ghost', type: 'material-community' },
 		},
 	]);
 	const [newPlayer, setNewPlayer] = useState('');
@@ -40,7 +41,6 @@ const NewGame = () => {
 					created: date.toISOString().slice(0, 10).replace(/-/g, ''),
 					completed: false,
 				};
-				console.log('THIS IS BODY', body);
 				await addGame({
 					userId: 'WhmxUY9EbUOzApjcpladJlaPOGW2',
 					gameId: Date.now().toString(),
@@ -48,7 +48,7 @@ const NewGame = () => {
 				});
 			}
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	};
 
@@ -58,9 +58,7 @@ const NewGame = () => {
 			{
 				name: newPlayer,
 				color: colors[colorCalc(players.length)],
-				icon: playerIcons[
-					Math.floor(Math.random() * playerIcons.length - 1)
-				].toString(),
+				icon: icons[Math.floor(Math.random() * icons.length - 1)],
 				score: '0',
 			},
 		]);
