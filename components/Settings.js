@@ -1,10 +1,26 @@
 import { View, Text } from 'react-native';
 import React from 'react';
+import { Button } from 'react-native-elements';
+import { getAuth, signOut } from 'firebase/auth';
 
 const Settings = () => {
+	const handleSignOut = () => {
+		const auth = getAuth();
+		signOut(auth)
+			.then(() => {
+				// Sign-out successful.
+			})
+			.catch((error) => {
+				// An error happened.
+			});
+	};
+
 	return (
 		<View>
-			<Text>Settings</Text>
+			<Button
+				title="Sign out"
+				onPress={() => handleSignOut()}
+			></Button>
 		</View>
 	);
 };

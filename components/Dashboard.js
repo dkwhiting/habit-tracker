@@ -1,21 +1,18 @@
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import GameTile from './GameTile';
 import { useSelector } from 'react-redux';
 import { Iconify } from 'react-native-iconify';
 import { useFetchAllGamesQuery } from '../store/apiSlice';
+import { UserContext } from './Main';
 
 const Dashboard = () => {
 	const [expandedTile, setExpandedTile] = useState(null);
 	const [sortAscending, setSortAscending] = useState(false);
-	const [games, setGames] = useState([]);
-	const { data, error, isLoading } = useFetchAllGamesQuery(
-		'WhmxUY9EbUOzApjcpladJlaPOGW2'
-	);
+	const user = useContext(UserContext);
+	const { data, error, isLoading } = useFetchAllGamesQuery(user.uid);
 
-	// useEffect(() => {
-	// 	console.log(data);
-	// }, [data]);
+	console.log(user);
 
 	return (
 		<ScrollView style={{ height: '100%' }}>

@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import {
 	API_KEY,
@@ -25,8 +26,4 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
-
-// export const db = initializeFirestore(app, {
-// 	experimentalForceLongPolling: true, // this line
-// 	useFetchStreams: false, // and this line
-// });
+export const auth = getAuth(app);

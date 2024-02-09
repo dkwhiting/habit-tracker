@@ -10,10 +10,16 @@ import {
 	Timestamp,
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import {
+	createUserWithEmailAndPassword,
+	getAuth,
+	signInWithEmailAndPassword,
+} from 'firebase/auth';
+const auth = getAuth();
 
 export const firestoreApi = createApi({
 	baseQuery: fakeBaseQuery(),
-	tagTypes: ['Games'],
+	tagTypes: ['Games', 'User'],
 	endpoints: (builder) => ({
 		fetchAllGames: builder.query({
 			async queryFn(userId) {
@@ -47,7 +53,48 @@ export const firestoreApi = createApi({
 			},
 			invalidatesTags: ['Games'],
 		}),
+		registerUser: builder.mutation({
+			async queryFn({ email, password }) {
+				createUserWithEmailAndPassword(auth, email, password)
+					.then((userCredential) => {
+						// Signed up
+						const user = userCredential.user;
+					})
+					.catch((error) => {
+						const errorCode = error.code;
+						const errorMessage = error.message;
+						// ..
+					});
+				return { data: null };
+			},
+			invalidatesTags: ['User', 'Games'],
+		}),
+		signInUser: builder.mutation({
+			async queryFn({ email, password }) {
+				let user;
+				console.log(email, password);
+				signInWithEmailAndPassword(auth, email, password)
+					.then((userCredential) => {
+						console.log(
+							'Signed in successfully with user: ',
+							userCredential.user
+						);
+						user = userCredential.user;
+					})
+					.catch((error) => {
+						const errorCode = error.code;
+						const errorMessage = error.message;
+					});
+				return { data: null };
+			},
+			invalidatesTags: ['User', 'Games'],
+		}),
 	}),
 });
 
-export const { useFetchAllGamesQuery, useAddNewGameMutation } = firestoreApi;
+export const {
+	useFetchAllGamesQuery,
+	useAddNewGameMutation,
+	useSignInUserMutation,
+	useRegisterUserMutation,
+} = firestoreApi;
