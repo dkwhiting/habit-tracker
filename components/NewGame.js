@@ -66,67 +66,74 @@ const NewGame = () => {
 	};
 
 	return (
-		<ScrollView style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-			{error ? <Text>{error}</Text> : null}
-			<TextInput
-				style={{ fontSize: 24, padding: 5, alignSelf: 'center' }}
-				value={name}
-				type="string"
-				placeholder="Enter a name for your game"
-				onChangeText={setName}
-				inputGoal="text"
-			/>
-			<View>
-				<Text style={{ fontSize: 22, padding: 5, alignSelf: 'center' }}>
-					Add Players!
-				</Text>
+		<View style={{ height: '100%', display: 'flex' }}>
+			<ScrollView
+				style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+				contentContainerStyle={{ display: 'flex', flexGrow: 1 }}
+			>
+				{error ? <Text>{error}</Text> : null}
 				<TextInput
-					style={{ fontSize: 18, padding: 5 }}
-					value={newPlayer}
+					style={{ fontSize: 24, padding: 5, alignSelf: 'center' }}
+					value={name}
 					type="string"
-					placeholder="Player name"
-					onChangeText={setNewPlayer}
+					placeholder="Enter a name for your game"
+					onChangeText={setName}
 					inputGoal="text"
-					enablesReturnKeyAutomatically={true}
-					onSubmitEditing={() => handleAddPlayer()}
+					autoFocus={true}
 				/>
-				<View
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						gap: 5,
-						padding: 5,
-					}}
-				>
-					{players.length > 0
-						? players.map((player, index) => {
-								return (
-									<PlayerSelectTile
-										player={player}
-										key={index}
-									/>
-								);
-						  })
-						: null}
+				<View style={{ flex: 1 }}>
+					<Text style={{ fontSize: 22, padding: 5, alignSelf: 'center' }}>
+						Add Players!
+					</Text>
+					<View
+						style={{
+							display: 'flex',
+							flexDirection: 'column',
+							gap: 5,
+							padding: 5,
+						}}
+					>
+						{players.length > 0
+							? players.map((player, index) => {
+									return (
+										<PlayerSelectTile
+											player={player}
+											key={index}
+										/>
+									);
+							  })
+							: null}
+						<TextInput
+							style={{ fontSize: 18, padding: 5 }}
+							value={newPlayer}
+							type="string"
+							placeholder="Player name"
+							onChangeText={setNewPlayer}
+							inputGoal="text"
+							enablesReturnKeyAutomatically={true}
+							onSubmitEditing={() => handleAddPlayer()}
+							blurOnSubmit={false}
+						/>
+					</View>
 				</View>
-			</View>
-			<View style={{ display: 'flex', flexDirection: 'row', padding: 5 }}>
-				<Text style={{ fontSize: 16, padding: 5 }}>Highest score wins</Text>
-				<Switch
-					trackColor={{ false: '#BCBCBC', true: '#06d6a0 ' }}
-					thumbColor={'#FFFFFF'}
-					ios_backgroundColor="#DDDDDD"
-					onValueChange={setHighestWins}
-					value={highestWins}
+				<View style={{ display: 'flex', flexDirection: 'row', padding: 5 }}>
+					<Text style={{ fontSize: 16, padding: 5 }}>Highest score wins</Text>
+					<Switch
+						trackColor={{ false: '#BCBCBC', true: '#06d6a0 ' }}
+						thumbColor={'#FFFFFF'}
+						ios_backgroundColor="#DDDDDD"
+						onValueChange={setHighestWins}
+						value={highestWins}
+					/>
+				</View>
+				<Button
+					title="Start Game"
+					color="white"
+					onPress={() => handleSubmit()}
+					style={{ width: '80%', alignSelf: 'center', borderRadius: 5 }}
 				/>
-			</View>
-			<Button
-				title="Start Game"
-				color="white"
-				onPress={() => handleSubmit()}
-				style={{ width: '80%', alignSelf: 'center', borderRadius: 5 }}
-			/>
-		</ScrollView>
+			</ScrollView>
+		</View>
 	);
 };
 
