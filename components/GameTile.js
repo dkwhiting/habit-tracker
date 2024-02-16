@@ -5,7 +5,7 @@ import { Button, Icon } from 'react-native-elements';
 import GameTileLeaders from './GameTileLeaders';
 import { dateToString } from '../utils';
 
-const GameTile = ({ key, game, index, expandedTile, setExpandedTile }) => {
+const GameTile = ({ game, index, expandedTile, setExpandedTile }) => {
 	const expandAnim = useRef(new Animated.Value(50)).current;
 	const fadeAnim = useRef(new Animated.Value(0)).current;
 	const gamePlayers = [...game?.players];
@@ -72,7 +72,6 @@ const GameTile = ({ key, game, index, expandedTile, setExpandedTile }) => {
 				borderRadius: 10,
 				overflow: 'hidden',
 			}}
-			key={key}
 			onPress={() => {
 				if (expandedTile !== game.id) {
 					setExpandedTile(game.id);

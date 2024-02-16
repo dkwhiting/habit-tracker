@@ -3,11 +3,12 @@ import React from 'react';
 import { Button } from 'react-native-elements';
 import { getAuth, signOut } from 'firebase/auth';
 
-const Settings = () => {
+const Settings = ({ setShowAuth }) => {
 	const handleSignOut = () => {
 		const auth = getAuth();
 		signOut(auth)
 			.then(() => {
+				setShowAuth(false);
 				// Sign-out successful.
 			})
 			.catch((error) => {

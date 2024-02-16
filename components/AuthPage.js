@@ -16,7 +16,7 @@ import {
 import Register from './Register';
 import Login from './Login';
 
-const AuthPage = () => {
+const AuthPage = ({ signInUser }) => {
 	const [errorMessage, setErrorMessage] = useState([]);
 	const [newAccount, setNewAccount] = useState(false);
 	const [form, setForm] = useState({
@@ -39,6 +39,7 @@ const AuthPage = () => {
 			form={form}
 			setForm={setForm}
 			setNewAccount={setNewAccount}
+			signInUser={signInUser}
 		/>
 	);
 };

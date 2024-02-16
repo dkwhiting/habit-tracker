@@ -5,7 +5,7 @@ import NewGame from './NewGame';
 
 const Tab = createBottomTabNavigator();
 
-function BottomNav() {
+function BottomNav({ setShowAuth }) {
 	return (
 		<Tab.Navigator>
 			<Tab.Screen
@@ -18,7 +18,7 @@ function BottomNav() {
 			/>
 			<Tab.Screen
 				name="Settings"
-				component={Settings}
+				children={() => <Settings setShowAuth={setShowAuth} />}
 			/>
 		</Tab.Navigator>
 	);
