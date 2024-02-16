@@ -66,14 +66,19 @@ const NewGame = () => {
 	};
 
 	return (
-		<View style={{ height: '100%', display: 'flex' }}>
+		<View style={{ height: '100%', display: 'flex', padding: 10 }}>
 			<ScrollView
 				style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
 				contentContainerStyle={{ display: 'flex', flexGrow: 1 }}
 			>
 				{error ? <Text>{error}</Text> : null}
 				<TextInput
-					style={{ fontSize: 24, padding: 5, alignSelf: 'center' }}
+					style={{
+						fontSize: 24,
+						padding: 5,
+						alignSelf: 'center',
+						paddingBottom: 15,
+					}}
 					value={name}
 					type="string"
 					placeholder="Enter a name for your game"
@@ -81,8 +86,21 @@ const NewGame = () => {
 					inputGoal="text"
 					autoFocus={true}
 				/>
-				<View style={{ flex: 1 }}>
-					<Text style={{ fontSize: 22, padding: 5, alignSelf: 'center' }}>
+				<View
+					style={{
+						borderBottomColor: 'black',
+						borderBottomWidth: 1,
+					}}
+				/>
+				<View style={{ flex: 1, paddingTop: 15 }}>
+					<Text
+						style={{
+							fontSize: 22,
+							padding: 5,
+							alignSelf: 'center',
+							paddingBottom: 15,
+						}}
+					>
 						Add Players!
 					</Text>
 					<View
