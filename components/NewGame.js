@@ -66,7 +66,15 @@ const NewGame = () => {
 	};
 
 	return (
-		<View style={{ height: '100%', display: 'flex', padding: 10 }}>
+		<View
+			style={{
+				height: '100%',
+				display: 'flex',
+				paddingRight: 10,
+				paddingLeft: 10,
+				paddingTop: 70,
+			}}
+		>
 			<ScrollView
 				style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
 				contentContainerStyle={{ display: 'flex', flexGrow: 1 }}
@@ -74,34 +82,28 @@ const NewGame = () => {
 				{error ? <Text>{error}</Text> : null}
 				<TextInput
 					style={{
-						fontSize: 24,
-						padding: 5,
+						fontSize: 30,
+						padding: 10,
 						alignSelf: 'center',
-						paddingBottom: 15,
+						backgroundColor: 'white',
+						borderRadius: 20,
 					}}
 					value={name}
 					type="string"
 					placeholder="Enter a name for your game"
 					onChangeText={setName}
 					inputGoal="text"
-					autoFocus={true}
 				/>
-				<View
-					style={{
-						borderBottomColor: 'black',
-						borderBottomWidth: 1,
-					}}
-				/>
+
 				<View style={{ flex: 1, paddingTop: 15 }}>
 					<Text
 						style={{
 							fontSize: 22,
 							padding: 5,
-							alignSelf: 'center',
 							paddingBottom: 15,
 						}}
 					>
-						Add Players!
+						Players
 					</Text>
 					<View
 						style={{
@@ -122,7 +124,12 @@ const NewGame = () => {
 							  })
 							: null}
 						<TextInput
-							style={{ fontSize: 18, padding: 5 }}
+							style={{
+								fontSize: 18,
+								padding: 13,
+								backgroundColor: 'white',
+								borderRadius: 10,
+							}}
 							value={newPlayer}
 							type="string"
 							placeholder="Player name"
@@ -134,21 +141,29 @@ const NewGame = () => {
 						/>
 					</View>
 				</View>
-				<View style={{ display: 'flex', flexDirection: 'row', padding: 5 }}>
-					<Text style={{ fontSize: 16, padding: 5 }}>Highest score wins</Text>
-					<Switch
-						trackColor={{ false: '#BCBCBC', true: '#06d6a0 ' }}
-						thumbColor={'#FFFFFF'}
-						ios_backgroundColor="#DDDDDD"
-						onValueChange={setHighestWins}
-						value={highestWins}
-					/>
+
+				<View style={{ display: 'flex', flexDirection: 'column', padding: 5 }}>
+					<View style={{ display: 'flex', flexDirection: 'row' }}>
+						<Text style={{ fontSize: 16, padding: 5 }}>Highest score wins</Text>
+						<Switch
+							trackColor={{ false: '#BCBCBC', true: '#06d6a0 ' }}
+							thumbColor={'#FFFFFF'}
+							ios_backgroundColor="#DDDDDD"
+							onValueChange={setHighestWins}
+							value={highestWins}
+						/>
+					</View>
 				</View>
 				<Button
 					title="Start Game"
 					color="white"
 					onPress={() => handleSubmit()}
-					style={{ width: '80%', alignSelf: 'center', borderRadius: 5 }}
+					style={{
+						width: '80%',
+						alignSelf: 'center',
+						borderRadius: 5,
+						paddingBottom: 30,
+					}}
 				/>
 			</ScrollView>
 		</View>

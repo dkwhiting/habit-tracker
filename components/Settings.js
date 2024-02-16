@@ -9,15 +9,17 @@ const Settings = ({ setShowAuth }) => {
 		signOut(auth)
 			.then(() => {
 				setShowAuth(false);
+				console.log('hi');
 				// Sign-out successful.
 			})
 			.catch((error) => {
 				// An error happened.
+				console.error(error);
 			});
 	};
 
 	return (
-		<View>
+		<View style={{ paddingTop: 70 }}>
 			<Button
 				title="Sign out"
 				onPress={() => handleSignOut()}

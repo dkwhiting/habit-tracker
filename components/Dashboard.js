@@ -14,7 +14,7 @@ const Dashboard = () => {
 	const { data, error, isLoading } = useFetchAllGamesQuery(user.uid);
 
 	return (
-		<ScrollView style={{ height: '100%' }}>
+		<ScrollView style={{ height: '100%', paddingTop: 50 }}>
 			<View
 				style={{
 					display: 'flex',
