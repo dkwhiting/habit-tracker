@@ -6,6 +6,7 @@ import { Iconify } from 'react-native-iconify';
 import { useFetchAllGamesQuery } from '../store/apiSlice';
 import { UserContext } from './Main';
 import SkeletonGameTile from './SkeletonGameTile';
+import MostPlayed from './statistics-tiles/MostPlayed';
 
 const Dashboard = () => {
 	const [expandedTile, setExpandedTile] = useState(null);

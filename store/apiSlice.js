@@ -8,6 +8,7 @@ import {
 	getDocs,
 	setDoc,
 	Timestamp,
+	deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import {
@@ -43,8 +44,21 @@ export const firestoreApi = createApi({
 		}),
 		addNewGame: builder.mutation({
 			async queryFn({ userId, gameId, body }) {
+				console.log(userId, gameId, body);
 				try {
 					await setDoc(doc(db, 'users', userId, 'games', gameId), body);
+					return { data: null };
+				} catch (error) {
+					console.error(error.message);
+					return { error: error.message };
+				}
+			},
+			invalidatesTags: ['Games'],
+		}),
+		deleteGame: builder.mutation({
+			async queryFn({ userId, gameId }) {
+				try {
+					await deleteDoc(doc(db, 'users', userId, 'games', gameId));
 					return { data: null };
 				} catch (error) {
 					console.error(error.message);
@@ -95,6 +109,7 @@ export const firestoreApi = createApi({
 export const {
 	useFetchAllGamesQuery,
 	useAddNewGameMutation,
+	useDeleteGameMutation,
 	useSignInUserMutation,
 	useRegisterUserMutation,
 } = firestoreApi;
