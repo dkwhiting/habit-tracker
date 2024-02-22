@@ -1,29 +1,7 @@
-import { View, Text, StyleSheet, Animated } from 'react-native';
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { colorCalc, colors } from '../data';
-import { Button, Icon } from 'react-native-elements';
-import GameTileLeaders from './GameTileLeaders';
-import { dateToString } from '../utils';
 
 const SkeletonGameTile = ({ index }) => {
-	const expandAnim = useRef(new Animated.Value(50)).current;
-	const fadeAnim = useRef(new Animated.Value(0)).current;
-
-	const fadeOut = () => {
-		// Will change fadeAnim value to 0 in 3 seconds
-		Animated.timing(expandAnim, {
-			toValue: 50,
-			duration: 300,
-			useNativeDriver: false,
-		}).start();
-
-		Animated.timing(fadeAnim, {
-			toValue: 0,
-			duration: 200,
-			useNativeDriver: false,
-		}).start();
-	};
-
 	return (
 		<View
 			style={{

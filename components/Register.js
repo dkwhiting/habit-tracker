@@ -24,12 +24,10 @@ const Register = ({ styles, form, setForm, setNewAccount }) => {
 	};
 
 	const handleSubmit = async () => {
-		console.log('HANDLE SUBMIT', form.email, form.password);
 		const user = await registerUser({
 			email: form.email,
 			password: form.password,
 		});
-		console.log(user);
 	};
 
 	return (
