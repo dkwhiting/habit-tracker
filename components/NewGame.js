@@ -1,5 +1,5 @@
-import { View, Text, TextInput, ScrollView } from 'react-native';
-import React, { useRef, useState } from 'react';
+import { View, Text, TextInput, ScrollView, Dimensions } from 'react-native';
+import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Switch } from 'react-native-elements';
 import { addGame } from '../store/gameSlice';
@@ -7,8 +7,15 @@ import PlayerSelectTile from './PlayerSelectTile';
 import { colorCalc, colors, icons, playerIcons } from '../data';
 import { Iconify } from 'react-native-iconify';
 import { useAddNewGameMutation } from '../store/apiSlice';
+import { useKeyboard } from '../hooks/useKeyboard';
+import LoadingModal from './LoadingModal';
+import { Animated } from 'react-native';
+import { UserContext } from './Main';
 
-const NewGame = () => {
+const NewGame = ({ showNewGame, setShowNewGame }) => {
+	const keyboardHeight = useKeyboard();
+	const windowHeight = Dimensions.get('window').height;
+	const user = useContext(UserContext);
 	const [name, setName] = useState('');
 	const [players, setPlayers] = useState([
 		{
@@ -26,6 +33,40 @@ const NewGame = () => {
 		{ isLoading: isUpdating }, // This is the destructured mutation result
 	] = useAddNewGameMutation();
 
+	//Handle modal animation
+	const showModalAnim = useRef(new Animated.Value(windowHeight - 90)).current;
+	const slideUp = () => {
+		// Will change hideModalAnim value to 1 in 5 seconds
+		console.log('slide up!');
+		Animated.timing(showModalAnim, {
+			toValue: 150,
+			duration: 300,
+			useNativeDriver: false,
+		}).start();
+	};
+
+	const slideDown = () => {
+		// Will change hideModalAnim value to 0 in 3 seconds
+		console.log('slide down!');
+		Animated.timing(showModalAnim, {
+			toValue: 600,
+			duration: 300,
+			useNativeDriver: false,
+		}).start();
+	};
+
+	useLayoutEffect(() => {
+		if (showNewGame) {
+			slideUp();
+		} else {
+			slideDown();
+		}
+	}, [showNewGame]);
+
+	useLayoutEffect(() => {
+		slideUp();
+	}, []);
+
 	const handleSubmit = async () => {
 		try {
 			if (!name) {
@@ -42,7 +83,7 @@ const NewGame = () => {
 					completed: false,
 				};
 				await addGame({
-					userId: 'WhmxUY9EbUOzApjcpladJlaPOGW2',
+					userId: user.uid,
 					gameId: Date.now().toString(),
 					body,
 				});
@@ -66,107 +107,134 @@ const NewGame = () => {
 	};
 
 	return (
-		<View
+		<Animated.View
 			style={{
 				height: '100%',
-				display: 'flex',
-				paddingRight: 10,
-				paddingLeft: 10,
-				paddingTop: 70,
+				width: '100%',
+				top: showModalAnim,
+				position: 'absolute',
+				zIndex: 2,
 			}}
 		>
-			<ScrollView
-				style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-				contentContainerStyle={{ display: 'flex', flexGrow: 1 }}
+			<View
+				style={{
+					position: 'absolute',
+					backgroundColor: 'white',
+					height: '100%',
+				}}
 			>
-				{error ? <Text>{error}</Text> : null}
-				<TextInput
+				{isUpdating ? <LoadingModal /> : null}
+				<View
 					style={{
-						fontSize: 30,
-						padding: 10,
-						alignSelf: 'center',
-						backgroundColor: 'white',
-						borderRadius: 20,
-					}}
-					value={name}
-					type="string"
-					placeholder="Enter a name for your game"
-					onChangeText={setName}
-					inputGoal="text"
-				/>
+						height: '100%',
 
-				<View style={{ flex: 1, paddingTop: 15 }}>
-					<Text
-						style={{
-							fontSize: 22,
-							padding: 5,
-							paddingBottom: 15,
-						}}
+						paddingTop: 70,
+					}}
+				>
+					<ScrollView
+						style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+						contentContainerStyle={{ display: 'flex', flexGrow: 1 }}
+						automaticallyAdjustKeyboardInsets={true}
 					>
-						Players
-					</Text>
-					<View
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							gap: 5,
-							padding: 5,
-						}}
-					>
-						{players.length > 0
-							? players.map((player, index) => {
-									return (
-										<PlayerSelectTile
-											player={player}
-											key={index}
-										/>
-									);
-							  })
-							: null}
 						<TextInput
 							style={{
-								fontSize: 18,
-								padding: 13,
+								width: '100%',
+								fontSize: 30,
+								padding: 10,
+								alignSelf: 'center',
 								backgroundColor: 'white',
-								borderRadius: 10,
+								borderRadius: 20,
 							}}
-							value={newPlayer}
+							value={name}
 							type="string"
-							placeholder="Player name"
-							onChangeText={setNewPlayer}
+							placeholder={!error ? 'Enter a name for your game' : error}
+							placeholderTextColor={!error ? '#BABABA' : 'red'}
+							onChangeText={setName}
+							onFocus={() => setError('')}
 							inputGoal="text"
-							enablesReturnKeyAutomatically={true}
-							onSubmitEditing={() => handleAddPlayer()}
-							blurOnSubmit={false}
 						/>
-					</View>
-				</View>
 
-				<View style={{ display: 'flex', flexDirection: 'column', padding: 5 }}>
-					<View style={{ display: 'flex', flexDirection: 'row' }}>
-						<Text style={{ fontSize: 16, padding: 5 }}>Highest score wins</Text>
-						<Switch
-							trackColor={{ false: '#BCBCBC', true: '#06d6a0 ' }}
-							thumbColor={'#FFFFFF'}
-							ios_backgroundColor="#DDDDDD"
-							onValueChange={setHighestWins}
-							value={highestWins}
+						<View style={{ flex: 1, paddingTop: 15 }}>
+							<Text
+								style={{
+									fontSize: 22,
+									padding: 5,
+									paddingBottom: 15,
+								}}
+							>
+								Players
+							</Text>
+							<View
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									gap: 5,
+									padding: 5,
+								}}
+							>
+								{players.length > 0
+									? players.map((player, index) => {
+											return (
+												<PlayerSelectTile
+													player={player}
+													key={index}
+													players={players}
+													setPlayers={setPlayers}
+													index={index}
+												/>
+											);
+									  })
+									: null}
+								<TextInput
+									style={{
+										fontSize: 18,
+										padding: 13,
+										backgroundColor: 'white',
+										borderRadius: 10,
+									}}
+									value={newPlayer}
+									type="string"
+									placeholder="Player name"
+									onChangeText={setNewPlayer}
+									inputGoal="text"
+									enablesReturnKeyAutomatically={true}
+									onSubmitEditing={() => handleAddPlayer()}
+									blurOnSubmit={false}
+								/>
+							</View>
+						</View>
+
+						<View
+							style={{ display: 'flex', flexDirection: 'column', padding: 5 }}
+						>
+							<View style={{ display: 'flex', flexDirection: 'row' }}>
+								<Text style={{ fontSize: 16, padding: 5 }}>
+									Highest score wins
+								</Text>
+								<Switch
+									trackColor={{ false: '#BCBCBC', true: '#06d6a0 ' }}
+									thumbColor={'#FFFFFF'}
+									ios_backgroundColor="#DDDDDD"
+									onValueChange={setHighestWins}
+									value={highestWins}
+								/>
+							</View>
+						</View>
+						<Button
+							title="Start Game"
+							color="white"
+							onPress={() => handleSubmit()}
+							style={{
+								width: '80%',
+								alignSelf: 'center',
+								borderRadius: 5,
+								paddingBottom: 30,
+							}}
 						/>
-					</View>
+					</ScrollView>
 				</View>
-				<Button
-					title="Start Game"
-					color="white"
-					onPress={() => handleSubmit()}
-					style={{
-						width: '80%',
-						alignSelf: 'center',
-						borderRadius: 5,
-						paddingBottom: 30,
-					}}
-				/>
-			</ScrollView>
-		</View>
+			</View>
+		</Animated.View>
 	);
 };
 
