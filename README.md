@@ -26,7 +26,7 @@ ScoreHQ is a full-stack web application tailor-made for board and card game enth
 
 ## Usage
 
-1. Open ScoreHQ in your preferred web browser.
+1. Download ScoreHQ from your preferred app store (coming soon).
 2. Create an account or log in if you already have one.
 3. Explore the intuitive interface and start a new game session.
 4. Add players and scores as the game progresses.
