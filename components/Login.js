@@ -11,7 +11,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSignInUserMutation } from '../store/apiSlice';
 
-const Login = ({ styles, form, setForm, setNewAccount, signInUser }) => {
+const Login = ({ styles, form, setForm, setShowPage, signInUser }) => {
 	// const [signInUser, { isLoading: isUpdating, error }] = useSignInUserMutation();
 	const createAlert = (error) => {
 		Alert.alert(error.status, error.message, [
@@ -84,7 +84,7 @@ const Login = ({ styles, form, setForm, setNewAccount, signInUser }) => {
 
 						<TouchableOpacity
 							onPress={() => {
-								setNewAccount(true);
+								setShowPage('register');
 							}}
 						>
 							<Text style={styles.formFooter}>

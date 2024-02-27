@@ -1,7 +1,6 @@
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import GameTile from './GameTile';
-import { useSelector } from 'react-redux';
 import { Iconify } from 'react-native-iconify';
 import {
 	useDeleteGameMutation,
@@ -9,10 +8,7 @@ import {
 } from '../store/apiSlice';
 import { UserContext } from './Main';
 import SkeletonGameTile from './SkeletonGameTile';
-import MostPlayed from './statistics-tiles/MostPlayed';
 import LoadingModal from './LoadingModal';
-import { Button } from 'react-native-elements';
-import NewGame from './NewGame';
 
 const Dashboard = ({ showNewGame, setShowNewGame }) => {
 	const [expandedTile, setExpandedTile] = useState(null);
@@ -31,8 +27,7 @@ const Dashboard = ({ showNewGame, setShowNewGame }) => {
 	return (
 		<>
 			{gamesLoading || deleteUpdating ? <LoadingModal /> : null}
-			<NewGame setShowNewGame={setShowNewGame} />
-			<ScrollView style={{ height: '100%', paddingTop: 50 }}>
+			<View style={{ height: '100%', paddingTop: 50 }}>
 				<View
 					style={{
 						display: 'flex',
@@ -58,10 +53,6 @@ const Dashboard = ({ showNewGame, setShowNewGame }) => {
 						<Text>{sortAscending ? 'Oldest' : 'Newest'}</Text>
 					</Pressable>
 				</View>
-				<Button
-					title="test"
-					onPress={() => setShowNewGame(!showNewGame)}
-				/>
 				<View
 					style={{
 						display: 'flex',
@@ -135,7 +126,7 @@ const Dashboard = ({ showNewGame, setShowNewGame }) => {
 							})
 					) : null}
 				</View>
-			</ScrollView>
+			</View>
 		</>
 	);
 };

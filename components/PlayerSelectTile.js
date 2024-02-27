@@ -6,7 +6,7 @@ import { colorCalc, colors } from '../data';
 
 const PlayerSelectTile = ({ index, player, players, setPlayers }) => {
 	const handleRemovePlayer = () => {
-		let newList = [...players].filter((x) => x.name !== player.name);
+		let newList = [...players].filter((x) => x.id !== player.id);
 		newList.forEach(
 			(player) => (player.color = colors[colorCalc(players[index - 1])])
 		);

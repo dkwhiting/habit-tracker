@@ -15,33 +15,40 @@ import {
 } from '../store/apiSlice';
 import Register from './Register';
 import Login from './Login';
+import SetUserDetails from './SetUserDetails';
 
 const AuthPage = ({ signInUser }) => {
 	const [errorMessage, setErrorMessage] = useState([]);
-	const [newAccount, setNewAccount] = useState(false);
+	const [showPage, setShowPage] = useState('login');
 	const [form, setForm] = useState({
-		fullname: '',
+		displayName: '',
 		email: 'jobin@faker.com',
 		password: 'password',
 		confirmPassword: '',
 	});
 
-	return newAccount ? (
+	return showPage === 'register' ? (
 		<Register
 			styles={styles}
 			form={form}
 			setForm={setForm}
-			setNewAccount={setNewAccount}
+			setShowPage={setShowPage}
 		/>
-	) : (
+	) : showPage === 'login' ? (
 		<Login
 			styles={styles}
 			form={form}
 			setForm={setForm}
-			setNewAccount={setNewAccount}
+			setShowPage={setShowPage}
 			signInUser={signInUser}
 		/>
-	);
+	) : showPage === 'setDetails' ? (
+		<SetUserDetails
+			styles={styles}
+			setShowPage={setShowPage}
+			signInUser={signInUser}
+		/>
+	) : null;
 };
 
 export default AuthPage;

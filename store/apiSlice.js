@@ -14,7 +14,9 @@ import { db } from '../firebase';
 import {
 	createUserWithEmailAndPassword,
 	getAuth,
+	sendEmailVerification,
 	signInWithEmailAndPassword,
+	updateProfile,
 } from 'firebase/auth';
 const auth = getAuth();
 
@@ -44,7 +46,6 @@ export const firestoreApi = createApi({
 		}),
 		addNewGame: builder.mutation({
 			async queryFn({ userId, gameId, body }) {
-				console.log(userId, gameId, body);
 				try {
 					await setDoc(doc(db, 'users', userId, 'games', gameId), body);
 					return { data: null };
@@ -68,11 +69,60 @@ export const firestoreApi = createApi({
 			invalidatesTags: ['Games'],
 		}),
 		registerUser: builder.mutation({
-			async queryFn({ email, password }) {
+			async queryFn({ email, password, displayName }) {
+				let user;
+				let errorCode;
+				let errorMessage;
 				createUserWithEmailAndPassword(auth, email, password)
 					.then((userCredential) => {
 						// Signed up
-						const user = userCredential.user;
+						user = userCredential.user;
+					})
+					.catch((error) => {
+						errorCode = error.code;
+						errorMessage = error.message;
+					});
+				console.error(errorCode);
+				console.error(errorMessage);
+				return { data: { error: { errorCode, errorMessage } } };
+			},
+			invalidatesTags: ['User', 'Games'],
+		}),
+		signInUser: builder.mutation({
+			async queryFn({ email, password }) {
+				let user;
+				signInWithEmailAndPassword(auth, email, password)
+					.then((userCredential) => {
+						console.log('Signed in successfully with user');
+					})
+					.catch((error) => {
+						const errorCode = error.code;
+						const errorMessage = error.message;
+					});
+				return { data: null };
+			},
+			invalidatesTags: ['User', 'Games'],
+		}),
+		updateUser: builder.mutation({
+			async queryFn({ email, password, displayName }) {
+				let user;
+				if (displayName) {
+					updateProfile(auth.currentUser, {
+						displayName: displayName,
+					})
+						.then(() => {
+							// Profile updated!
+							// ...
+						})
+						.catch((error) => {
+							const errorCode = error.code;
+							const errorMessage = error.message;
+						});
+				}
+				sendEmailVerification(auth.currentUser)
+					.then(() => {
+						// Email verification sent!
+						// ...
 					})
 					.catch((error) => {
 						const errorCode = error.code;
@@ -81,27 +131,7 @@ export const firestoreApi = createApi({
 					});
 				return { data: null };
 			},
-			invalidatesTags: ['User', 'Games'],
-		}),
-		signInUser: builder.mutation({
-			async queryFn({ email, password }) {
-				let user;
-				console.log(email, password);
-				signInWithEmailAndPassword(auth, email, password)
-					.then((userCredential) => {
-						console.log(
-							'Signed in successfully with user: ',
-							userCredential.user
-						);
-						user = userCredential.user;
-					})
-					.catch((error) => {
-						const errorCode = error.code;
-						const errorMessage = error.message;
-					});
-				return { data: null };
-			},
-			invalidatesTags: ['User', 'Games'],
+			invalidatesTags: ['User'],
 		}),
 	}),
 });
@@ -112,4 +142,5 @@ export const {
 	useDeleteGameMutation,
 	useSignInUserMutation,
 	useRegisterUserMutation,
+	useUpdateUserMutation,
 } = firestoreApi;

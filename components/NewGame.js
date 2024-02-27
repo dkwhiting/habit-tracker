@@ -1,5 +1,19 @@
-import { View, Text, TextInput, ScrollView, Dimensions } from 'react-native';
-import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
+import {
+	View,
+	Text,
+	TextInput,
+	ScrollView,
+	Dimensions,
+	KeyboardAvoidingView,
+	Platform,
+} from 'react-native';
+import React, {
+	useContext,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Switch } from 'react-native-elements';
 import { addGame } from '../store/gameSlice';
@@ -11,15 +25,17 @@ import { useKeyboard } from '../hooks/useKeyboard';
 import LoadingModal from './LoadingModal';
 import { Animated } from 'react-native';
 import { UserContext } from './Main';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const NewGame = ({ showNewGame, setShowNewGame }) => {
 	const keyboardHeight = useKeyboard();
 	const windowHeight = Dimensions.get('window').height;
+	const [contentBottom, setContentBottom] = useState(0);
 	const user = useContext(UserContext);
 	const [name, setName] = useState('');
 	const [players, setPlayers] = useState([
 		{
-			name: 'Dallin',
+			name: user.displayName,
 			color: colors[0],
 			score: 0,
 			icon: { name: 'ghost', type: 'material-community' },
@@ -35,37 +51,6 @@ const NewGame = ({ showNewGame, setShowNewGame }) => {
 
 	//Handle modal animation
 	const showModalAnim = useRef(new Animated.Value(windowHeight - 90)).current;
-	const slideUp = () => {
-		// Will change hideModalAnim value to 1 in 5 seconds
-		console.log('slide up!');
-		Animated.timing(showModalAnim, {
-			toValue: 150,
-			duration: 300,
-			useNativeDriver: false,
-		}).start();
-	};
-
-	const slideDown = () => {
-		// Will change hideModalAnim value to 0 in 3 seconds
-		console.log('slide down!');
-		Animated.timing(showModalAnim, {
-			toValue: 600,
-			duration: 300,
-			useNativeDriver: false,
-		}).start();
-	};
-
-	useLayoutEffect(() => {
-		if (showNewGame) {
-			slideUp();
-		} else {
-			slideDown();
-		}
-	}, [showNewGame]);
-
-	useLayoutEffect(() => {
-		slideUp();
-	}, []);
 
 	const handleSubmit = async () => {
 		try {
@@ -94,147 +79,124 @@ const NewGame = ({ showNewGame, setShowNewGame }) => {
 	};
 
 	const handleAddPlayer = () => {
-		setPlayers([
-			...players,
-			{
-				name: newPlayer,
-				color: colors[colorCalc(players.length)],
-				icon: icons[Math.floor(Math.random() * icons.length - 1)],
-				score: '0',
-			},
-		]);
-		setNewPlayer('');
+		if (newPlayer.length > 0) {
+			setPlayers([
+				...players,
+				{
+					id: players.length - 1,
+					name: newPlayer,
+					color: colors[colorCalc(players.length)],
+					icon: icons[Math.floor(Math.random() * icons.length - 1)],
+					score: '0',
+				},
+			]);
+			setNewPlayer('');
+		}
 	};
 
 	return (
-		<Animated.View
-			style={{
-				height: '100%',
-				width: '100%',
-				top: showModalAnim,
-				position: 'absolute',
-				zIndex: 2,
-			}}
-		>
-			<View
-				style={{
-					position: 'absolute',
-					backgroundColor: 'white',
-					height: '100%',
-				}}
+		<>
+			{isUpdating ? <LoadingModal /> : null}
+			<KeyboardAvoidingView
+				keyboardVerticalOffset={keyboardHeight + 100}
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+				style={{ flex: 1 }}
 			>
-				{isUpdating ? <LoadingModal /> : null}
-				<View
+				<TextInput
 					style={{
-						height: '100%',
-
-						paddingTop: 70,
+						width: '100%',
+						fontSize: 30,
+						padding: 10,
+						alignSelf: 'center',
+						backgroundColor: 'white',
+						borderRadius: 20,
 					}}
-				>
+					value={name}
+					type="string"
+					placeholder={!error ? 'Enter a name for your game' : error}
+					placeholderTextColor={!error ? '#BABABA' : 'red'}
+					onChangeText={setName}
+					onFocus={() => setError('')}
+					inputGoal="text"
+				/>
+				<View style={{ flex: 1, paddingTop: 15 }}>
 					<ScrollView
-						style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-						contentContainerStyle={{ display: 'flex', flexGrow: 1 }}
-						automaticallyAdjustKeyboardInsets={true}
+						style={{
+							display: 'flex',
+							flexDirection: 'column',
+							gap: 5,
+							padding: 5,
+							flex: 0,
+							flex: 1,
+						}}
 					>
+						<Text
+							style={{
+								fontSize: 22,
+								padding: 5,
+								paddingBottom: 15,
+							}}
+						>
+							Players
+						</Text>
+						{players.length > 0
+							? players.map((player, index) => {
+									return (
+										<PlayerSelectTile
+											player={player}
+											key={index}
+											players={players}
+											setPlayers={setPlayers}
+											index={index}
+										/>
+									);
+							  })
+							: null}
 						<TextInput
 							style={{
-								width: '100%',
-								fontSize: 30,
-								padding: 10,
-								alignSelf: 'center',
+								fontSize: 18,
+								padding: 13,
 								backgroundColor: 'white',
-								borderRadius: 20,
+								borderRadius: 10,
 							}}
-							value={name}
+							value={newPlayer}
 							type="string"
-							placeholder={!error ? 'Enter a name for your game' : error}
-							placeholderTextColor={!error ? '#BABABA' : 'red'}
-							onChangeText={setName}
-							onFocus={() => setError('')}
+							placeholder="Player name"
+							onChangeText={setNewPlayer}
 							inputGoal="text"
-						/>
-
-						<View style={{ flex: 1, paddingTop: 15 }}>
-							<Text
-								style={{
-									fontSize: 22,
-									padding: 5,
-									paddingBottom: 15,
-								}}
-							>
-								Players
-							</Text>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'column',
-									gap: 5,
-									padding: 5,
-								}}
-							>
-								{players.length > 0
-									? players.map((player, index) => {
-											return (
-												<PlayerSelectTile
-													player={player}
-													key={index}
-													players={players}
-													setPlayers={setPlayers}
-													index={index}
-												/>
-											);
-									  })
-									: null}
-								<TextInput
-									style={{
-										fontSize: 18,
-										padding: 13,
-										backgroundColor: 'white',
-										borderRadius: 10,
-									}}
-									value={newPlayer}
-									type="string"
-									placeholder="Player name"
-									onChangeText={setNewPlayer}
-									inputGoal="text"
-									enablesReturnKeyAutomatically={true}
-									onSubmitEditing={() => handleAddPlayer()}
-									blurOnSubmit={false}
-								/>
-							</View>
-						</View>
-
-						<View
-							style={{ display: 'flex', flexDirection: 'column', padding: 5 }}
-						>
-							<View style={{ display: 'flex', flexDirection: 'row' }}>
-								<Text style={{ fontSize: 16, padding: 5 }}>
-									Highest score wins
-								</Text>
-								<Switch
-									trackColor={{ false: '#BCBCBC', true: '#06d6a0 ' }}
-									thumbColor={'#FFFFFF'}
-									ios_backgroundColor="#DDDDDD"
-									onValueChange={setHighestWins}
-									value={highestWins}
-								/>
-							</View>
-						</View>
-						<Button
-							title="Start Game"
-							color="white"
-							onPress={() => handleSubmit()}
-							style={{
-								width: '80%',
-								alignSelf: 'center',
-								borderRadius: 5,
-								paddingBottom: 30,
-							}}
+							autoComplete="off"
+							autoCorrect={false}
+							enablesReturnKeyAutomatically={true}
+							onSubmitEditing={() => handleAddPlayer()}
+							blurOnSubmit={false}
 						/>
 					</ScrollView>
 				</View>
-			</View>
-		</Animated.View>
+				<View style={{ display: 'flex', flexDirection: 'column', padding: 5 }}>
+					<View style={{ display: 'flex', flexDirection: 'row' }}>
+						<Text style={{ fontSize: 16, padding: 5 }}>Highest score wins</Text>
+						<Switch
+							trackColor={{ false: '#BCBCBC', true: '#06d6a0 ' }}
+							thumbColor={'#FFFFFF'}
+							ios_backgroundColor="#DDDDDD"
+							onValueChange={setHighestWins}
+							value={highestWins}
+						/>
+					</View>
+				</View>
+				<Button
+					title="Start Game"
+					color="white"
+					onPress={() => handleSubmit()}
+					style={{
+						width: '80%',
+						alignSelf: 'center',
+						borderRadius: 5,
+						paddingBottom: 30,
+					}}
+				/>
+			</KeyboardAvoidingView>
+		</>
 	);
 };
 

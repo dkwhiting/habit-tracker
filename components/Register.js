@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
 	StyleSheet,
 	SafeAreaView,
@@ -10,9 +10,12 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useRegisterUserMutation } from '../store/apiSlice';
+import { UserContext } from './Main';
 
-const Register = ({ styles, form, setForm, setNewAccount }) => {
+const Register = ({ styles, form, setForm, setShowPage }) => {
 	const [registerUser, { error }] = useRegisterUserMutation();
+	const user = useContext(UserContext);
+
 	const createAlert = (error) => {
 		Alert.alert(error.status, error.message, [
 			{
@@ -23,11 +26,44 @@ const Register = ({ styles, form, setForm, setNewAccount }) => {
 		]);
 	};
 
+	useEffect(() => {
+		if (user?.uid) {
+			setShowPage('setDetails');
+		}
+	}, [user]);
+
 	const handleSubmit = async () => {
-		const user = await registerUser({
+		if (form.password.length === 0) {
+			const error = {
+				status: 'Password needed',
+				message: 'Password can not be left blank',
+			};
+			createAlert(error);
+			return;
+		}
+		if (form.password.length < 6) {
+			const error = {
+				status: 'Password too short',
+				message: 'Password must be at least 6 characters',
+			};
+			createAlert(error);
+			return;
+		}
+		if (form.password !== form.confirmPassword) {
+			const error = {
+				status: 'Invalid password',
+				message: 'Passwords do not match',
+			};
+			createAlert(error);
+			return;
+		}
+
+		const response = await registerUser({
 			email: form.email,
 			password: form.password,
+			displayName: form.displayName,
 		});
+		console.log(response);
 	};
 
 	return (
@@ -41,18 +77,6 @@ const Register = ({ styles, form, setForm, setNewAccount }) => {
 
 				<KeyboardAwareScrollView>
 					<View style={styles.form}>
-						<View style={styles.input}>
-							<Text style={styles.inputLabel}>Full name</Text>
-
-							<TextInput
-								onChangeText={(fullname) => setForm({ ...form, fullname })}
-								placeholder="John Doe"
-								placeholderTextColor="#6b7280"
-								style={styles.inputControl}
-								value={form.fullname}
-							/>
-						</View>
-
 						<View style={styles.input}>
 							<Text style={styles.inputLabel}>Email address</Text>
 
@@ -112,7 +136,7 @@ const Register = ({ styles, form, setForm, setNewAccount }) => {
 
 						<TouchableOpacity
 							onPress={() => {
-								setNewAccount(false);
+								setShowPage('login');
 							}}
 						>
 							<Text style={styles.formFooter}>
