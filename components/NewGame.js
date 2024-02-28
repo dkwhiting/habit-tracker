@@ -27,7 +27,7 @@ import { Animated } from 'react-native';
 import { UserContext } from './Main';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-const NewGame = ({ showNewGame, setShowNewGame }) => {
+const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 	const keyboardHeight = useKeyboard();
 	const windowHeight = Dimensions.get('window').height;
 	const [contentBottom, setContentBottom] = useState(0);
@@ -60,6 +60,7 @@ const NewGame = ({ showNewGame, setShowNewGame }) => {
 				setError('You must add at least one player');
 			} else {
 				const date = new Date();
+				const gameId = Date.now().toString();
 				const body = {
 					name,
 					players,
@@ -67,11 +68,13 @@ const NewGame = ({ showNewGame, setShowNewGame }) => {
 					created: date.toISOString().slice(0, 10).replace(/-/g, ''),
 					completed: false,
 				};
-				await addGame({
+				const newGame = await addGame({
 					userId: user.uid,
-					gameId: Date.now().toString(),
+					gameId: gameId,
 					body,
 				});
+				navigation.pop();
+				navigation.navigate('LiveGame', { game: newGame.data });
 			}
 		} catch (error) {
 			console.error(error);
@@ -118,6 +121,7 @@ const NewGame = ({ showNewGame, setShowNewGame }) => {
 					onChangeText={setName}
 					onFocus={() => setError('')}
 					inputGoal="text"
+					// autoFocus
 				/>
 				<View style={{ flex: 1, paddingTop: 15 }}>
 					<ScrollView

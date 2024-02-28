@@ -23,8 +23,8 @@ const LoadingModal = () => {
 					position: 'absolute',
 					height: '100%',
 					width: '100%',
-					backgroundColor: 'black',
-					opacity: 0.15,
+					backgroundColor: 'white',
+					opacity: 0.75,
 				}}
 			></View>
 			<View style={{ width: 60, height: 60 }}>

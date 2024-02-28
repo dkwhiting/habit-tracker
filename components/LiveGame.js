@@ -1,10 +1,12 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 
-const LiveGame = () => {
+const LiveGame = ({ route, navigation }) => {
+	const { game } = route.params;
+	console.log(game);
 	return (
 		<View>
-			<Text>LiveGame</Text>
+			<Text>{game.name}</Text>
 		</View>
 	);
 };

@@ -9,6 +9,7 @@ import {
 	setDoc,
 	Timestamp,
 	deleteDoc,
+	getDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import {
@@ -48,7 +49,18 @@ export const firestoreApi = createApi({
 			async queryFn({ userId, gameId, body }) {
 				try {
 					await setDoc(doc(db, 'users', userId, 'games', gameId), body);
-					return { data: null };
+					const docRef = doc(db, 'users', userId, 'games', gameId);
+					const docSnap = await getDoc(docRef);
+					let game;
+
+					if (docSnap.exists()) {
+						console.log('Document data:', docSnap.data());
+						game = docSnap.data();
+					} else {
+						// docSnap.data() will be undefined in this case
+						console.log('No such document!');
+					}
+					return { data: game };
 				} catch (error) {
 					console.error(error.message);
 					return { error: error.message };

@@ -12,7 +12,8 @@ import NewGame from './NewGame';
 import NewGameButton from './NewGameButton';
 import PlusCircle from '../assets/svgs/PlusCircle';
 import { Pressable } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
+import LiveGame from './LiveGame';
 
 export const UserContext = createContext();
 const Stack = createNativeStackNavigator();
@@ -53,7 +54,6 @@ const Main = () => {
 			) : (
 				<UserContext.Provider value={currentUser}>
 					<NavigationContainer>
-						<NewGameButton />
 						<Stack.Navigator>
 							<Stack.Screen
 								name="BottomNav"
@@ -76,6 +76,14 @@ const Main = () => {
 											/>
 										</Pressable>
 									),
+								})}
+							/>
+							<Stack.Screen
+								name="LiveGame"
+								component={LiveGame}
+								options={({ route }) => ({
+									title: route.params.game.name,
+									headerBackTitle: 'Back',
 								})}
 							/>
 						</Stack.Navigator>

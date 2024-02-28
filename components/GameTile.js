@@ -5,8 +5,8 @@ import { Button, Icon } from 'react-native-elements';
 import GameTileLeaders from './GameTileLeaders';
 import { dateToString } from '../utils';
 import { ListItem } from '@rneui/themed-edge';
-import { useDeleteGameMutation } from '../store/apiSlice';
 import { UserContext } from './Main';
+import { useNavigation } from '@react-navigation/native';
 
 const GameTile = ({
 	game,
@@ -22,32 +22,33 @@ const GameTile = ({
 	const today = date.toISOString().slice(0, 10).replace(/-/g, '');
 	const tomorrow = date.toISOString().slice(0, 10).replace(/-/g, '') + 1;
 	const user = useContext(UserContext);
+	const navigation = useNavigation();
 
 	const fadeIn = () => {
 		// Will change fadeAnim value to 1 in 5 seconds
 		if (game.players.length >= 3) {
 			Animated.timing(expandAnim, {
 				toValue: 225,
-				duration: 300,
+				duration: 200,
 				useNativeDriver: false,
 			}).start();
 		} else if (game.players.length === 2) {
 			Animated.timing(expandAnim, {
 				toValue: 190,
-				duration: 300,
+				duration: 200,
 				useNativeDriver: false,
 			}).start();
 		} else {
 			Animated.timing(expandAnim, {
 				toValue: 155,
-				duration: 300,
+				duration: 200,
 				useNativeDriver: false,
 			}).start();
 		}
 
 		Animated.timing(fadeAnim, {
 			toValue: 1,
-			duration: 600,
+			duration: 200,
 			useNativeDriver: false,
 		}).start();
 	};
@@ -56,7 +57,7 @@ const GameTile = ({
 		// Will change fadeAnim value to 0 in 3 seconds
 		Animated.timing(expandAnim, {
 			toValue: 50,
-			duration: 300,
+			duration: 200,
 			useNativeDriver: false,
 		}).start();
 
@@ -217,6 +218,7 @@ const GameTile = ({
 						<Button
 							title="Resume Game"
 							color="black"
+							onPress={() => navigation.navigate('LiveGame', { game: game })}
 						/>
 					</Animated.View>
 				</Animated.View>
