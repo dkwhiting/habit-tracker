@@ -201,9 +201,23 @@ const GameTile = ({
 						{gamePlayers
 							.sort((a, b) => {
 								if (game.highestWins) {
-									return b.score - a.score;
+									return (
+										b.score.reduce(function (a, b) {
+											return a + b;
+										}, 0) -
+										a.score.reduce(function (a, b) {
+											return a + b;
+										}, 0)
+									);
 								}
-								return a.score - b.score;
+								return (
+									a.score.reduce(function (a, b) {
+										return a + b;
+									}, 0) -
+									b.score.reduce(function (a, b) {
+										return a + b;
+									}, 0)
+								);
 							})
 							.slice(0, 3)
 							.map((player, index) => {

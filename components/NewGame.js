@@ -37,7 +37,7 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 		{
 			name: user.displayName,
 			color: colors[0],
-			score: 0,
+			score: [0],
 			icon: { name: 'ghost', type: 'material-community' },
 		},
 	]);
@@ -90,7 +90,7 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 					name: newPlayer,
 					color: colors[colorCalc(players.length)],
 					icon: icons[Math.floor(Math.random() * icons.length - 1)],
-					score: '0',
+					score: [0],
 				},
 			]);
 			setNewPlayer('');
@@ -100,11 +100,7 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 	return (
 		<>
 			{isUpdating ? <LoadingModal /> : null}
-			<KeyboardAvoidingView
-				keyboardVerticalOffset={keyboardHeight + 100}
-				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				style={{ flex: 1 }}
-			>
+			<View style={{ flex: 1 }}>
 				<TextInput
 					style={{
 						width: '100%',
@@ -199,7 +195,7 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 						paddingBottom: 30,
 					}}
 				/>
-			</KeyboardAvoidingView>
+			</View>
 		</>
 	);
 };
