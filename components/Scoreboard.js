@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
-import ScoreboardRow from './ScoreboardRow';
+import ScoreCell from './ScoreCell';
 
 const Scoreboard = ({ game }) => {
 	const [rounds, setRounds] = useState([]);
@@ -44,7 +44,7 @@ const Scoreboard = ({ game }) => {
 	}, [game]);
 
 	return (
-	<View style={{display:'flex', flexDirection: 'column', justifyContent: 'space-between', height:'100%'}}>
+	<View style={{display:'flex', flexDirection: 'column', gap:4, height:'100%'}}>
 		<View style={styles.scoresContainer}>
 			<View style={styles.playersColumn} onLayout={handleLeftColumnLayout}>
 				<Text style={styles.headerCell}>Players</Text>
@@ -62,7 +62,7 @@ const Scoreboard = ({ game }) => {
 				contentContainerStyle={{ 
 					paddingLeft: leftColumnWidth,
 					paddingRight: rightColumnWidth,
-	
+					flexGrow: 1
 				}}
 			>
 				<View style={styles.roundsContainer}>
@@ -72,11 +72,7 @@ const Scoreboard = ({ game }) => {
 								<Text numberOfLines={1} style={[styles.headerCell, {textAlign: 'center', flexWrap:'nowrap'}]}>Round {parseInt(i) + 1}</Text>
 								{orderedPlayers.map((player, i) => {
 									return (
-										<TouchableOpacity 
-										key={i} 
-										style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {textAlign: 'right'}]}>
-											<Text style={{fontSize:20, textAlign:'center'}}>{player.score[round] ? player.score[round] : '-'}</Text>
-										</TouchableOpacity>
+										<ScoreCell round={round} player={player} i={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {textAlign: 'right'}]}/>
 									)
 								})}
 							</View>
@@ -145,6 +141,13 @@ const styles = StyleSheet.create({
 		borderLeftColor:'white',
 		borderLeftWidth:2
 	},
+	headerCell: {
+		padding: 8,
+		fontSize: 20,
+		backgroundColor: 'rgb(239, 71, 111)',
+		fontWeight: 'bold',
+		color: 'white'
+	},
 	singleCellOdd: {
 		paddingHorizontal: 8,
 		paddingVertical:24,
@@ -156,13 +159,6 @@ const styles = StyleSheet.create({
 		paddingVertical:24,
 		fontSize: 20,
 		backgroundColor: '#f2f2f2'
-	},
-	headerCell: {
-		padding: 8,
-		fontSize: 20,
-		backgroundColor: 'rgb(239, 71, 111)',
-		fontWeight: 'bold',
-		color: 'white'
 	},
 	endRound: {
 		backgroundColor: '#06D6A0',
