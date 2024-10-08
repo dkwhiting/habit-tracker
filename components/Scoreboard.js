@@ -1,14 +1,26 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import ScoreCell from './ScoreCell';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Scoreboard = ({ game }) => {
 	const [rounds, setRounds] = useState([]);
 	const [orderedPlayers, setOrderedPlayers] = useState()
 	const [leftColumnWidth, setLeftColumnWidth] = useState(0);
 	const [rightColumnWidth, setRightColumnWidth] = useState(0);
+	const [scrollViewWidth, setScrollViewWidth] = useState(0)
 	const scrollViewRef = useRef(null);
-	const ScreenWidth = Dimensions.get('window').width;
+	const screenWidth = Dimensions.get('window').width;
+
+	const calculateScrollOffsets = (event) => {
+		const { width } = event.nativeEvent.layout;
+		const columnWidth = width / rounds
+		const offsets = []
+		rounds.forEach((round, i)=>{ 
+			console.log(round)
+			offsets.push(columnWidth * (i + 1))
+		})
+	} 
 
 	const handleLeftColumnLayout = (event) => {
 		const { width } = event.nativeEvent.layout;
@@ -20,11 +32,14 @@ const Scoreboard = ({ game }) => {
 		setRightColumnWidth(width);
 	  };
 
-	useEffect(() => {
-	if (scrollViewRef.current) {
-		scrollViewRef.current.scrollToEnd({ animated: false });  // You can set animated to true if you want it to scroll smoothly
-	}
-	}, [rounds]);
+	  useEffect(() => {
+		if (scrollViewRef.current && scrollViewWidth > 0) {
+		  scrollViewRef.current.scrollTo({
+			x: scrollViewWidth - screenWidth, // Scroll to the end
+			animated: false,
+		  });
+		}
+	  }, [scrollViewWidth]);
 
 	const sortPlayers = () => {
 		const sortedPlayers = [...game.players].sort((a, b) => {
@@ -44,66 +59,68 @@ const Scoreboard = ({ game }) => {
 	}, [game]);
 
 	return (
-	<View style={{display:'flex', flexDirection: 'column', gap:4, height:'100%'}}>
-		<View style={styles.scoresContainer}>
-			<View style={styles.playersColumn} onLayout={handleLeftColumnLayout}>
-				<Text style={styles.headerCell}>Players</Text>
-				{
-				orderedPlayers 
-					? orderedPlayers.map((player, i) => <Text key={i} style={i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd}>{player.name}</Text>)
-					: null
-				}
-			</View>
-			<ScrollView 
-				ref={scrollViewRef}
-				horizontal 
-				overScrollMode={false}
-				bounces={false}
-				contentContainerStyle={{ 
-					paddingLeft: leftColumnWidth,
-					paddingRight: rightColumnWidth,
-					flexGrow: 1
-				}}
-			>
-				<View style={styles.roundsContainer}>
-					{[...rounds].reverse().map((round, i) => {
-						return (
-							<View key={i} style={[styles.roundsColumn, {flex: 1, flexWrap:'nowrap'}]}>
-								<Text numberOfLines={1} style={[styles.headerCell, {textAlign: 'center', flexWrap:'nowrap'}]}>Round {parseInt(i) + 1}</Text>
-								{orderedPlayers.map((player, i) => {
-									return (
-										<ScoreCell round={round} player={player} i={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {textAlign: 'right'}]}/>
-									)
-								})}
-							</View>
-						)
-					})}
-				</View>
-			</ScrollView>
-			<View style={styles.totalsColumn} onLayout={handleRightColumnLayout}>
-				<Text style={[styles.headerCell, {textAlign:'center'}]}>Total</Text>
-				{
+		<View style={{display:'flex', flexDirection: 'column', gap:4, height:'100%'}}>
+			<View style={styles.scoresContainer}>
+				<View style={styles.playersColumn} onLayout={handleLeftColumnLayout}>
+					<Text style={styles.headerCell}>Players</Text>
+					{
 					orderedPlayers 
-						? orderedPlayers.map((player, i) => {
-							return (
-								<Text key={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {fontWeight:'bold', textAlign:'center'}]}>
-									{player.score.reduce((a,b)=>{
-										return a + b
-									},0)}
-								</Text>
-							)
-						})
+						? orderedPlayers.map((player, i) => <Text key={i} style={i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd}>{player.name}</Text>)
 						: null
-				}
+					}
+				</View>
+				<ScrollView 
+					ref={scrollViewRef}
+					horizontal 
+					overScrollMode={false}
+					bounces={false}
+					showsHorizontalScrollIndicator={false}
+					onContentSizeChange={(width, height) => setScrollViewWidth(width)}
+					contentContainerStyle={{ 
+						paddingLeft: leftColumnWidth,
+						paddingRight: rightColumnWidth,
+						flexGrow: 1
+					}}
+				>
+					<View style={styles.roundsContainer} onLayout={calculateScrollOffsets}>
+						{[...rounds].reverse().map((round, i) => {
+							return (
+								<View key={i} style={[styles.roundsColumn, {flex: 1, flexWrap:'nowrap'}]}>
+									<Text numberOfLines={1} style={[styles.headerCell, {textAlign: 'center', flexWrap:'nowrap'}]}>Round {parseInt(i) + 1}</Text>
+									{orderedPlayers.map((player, i) => {
+										return (
+											<ScoreCell key={i} round={round} player={player} i={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {textAlign: 'right'}]}/>
+										)
+									})}
+								</View>
+							)
+						})}
+					</View>
+				</ScrollView>
+				<View style={styles.totalsColumn} onLayout={handleRightColumnLayout}>
+					<Text style={[styles.headerCell, {textAlign:'center'}]}>Total</Text>
+					{
+						orderedPlayers 
+							? orderedPlayers.map((player, i) => {
+								return (
+									<Text key={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {fontWeight:'bold', textAlign:'center'}]}>
+										{player.score.reduce((a,b)=>{
+											return a + b
+										},0)}
+									</Text>
+								)
+							})
+							: null
+					}
+				</View>
 			</View>
+			<TouchableOpacity
+				style={styles.endRound}
+				onPress={()=>{}}
+			>
+				<Text style={{color:'white', textAlign:'center', fontSize:20, fontWeight:'bold'}}>End Round</Text>
+			</TouchableOpacity>
 		</View>
-		<TouchableOpacity
-			style={styles.endRound}
-			onPress={()=>{}}
-		>
-			<Text style={{color:'white', textAlign:'center', fontSize:20, fontWeight:'bold'}}>End Round</Text>
-		</TouchableOpacity>
-	</View>
 	)
 }
 

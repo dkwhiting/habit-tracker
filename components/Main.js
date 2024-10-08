@@ -81,7 +81,7 @@ const Main = () => {
 							<Stack.Screen
 								name="LiveGame"
 								component={LiveGame}
-								options={({ route }) => ({
+								options={({ route, navigation }) => ({
 									title: route.params.game.name,
 									headerBackTitle: 'Back',
 								})}
