@@ -19,7 +19,6 @@ import { Button, Switch } from 'react-native-elements';
 import { addGame } from '../store/gameSlice';
 import PlayerSelectTile from './PlayerSelectTile';
 import { colorCalc, colors, icons, playerIcons } from '../data';
-import { Iconify } from 'react-native-iconify';
 import { useAddNewGameMutation } from '../store/apiSlice';
 import { useKeyboard } from '../hooks/useKeyboard';
 import LoadingModal from './LoadingModal';

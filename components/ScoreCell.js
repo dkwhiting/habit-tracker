@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native"
 import React, { useState } from "react"
 import { TouchableOpacity, StyleSheet, Text } from "react-native"
 
-const ScoreCell = ({round, player, style}) => {
+const ScoreCell = ({game, round, player, style}) => {
     const [innerText, setInnerText] = useState(player.score[round] ? player.score[round] : '-')
     const navigation = useNavigation();
 
@@ -10,7 +10,7 @@ const ScoreCell = ({round, player, style}) => {
         <TouchableOpacity 
             style={style}
             onPress={() => {
-				navigation.navigate('ScoreEdit', {round: round, player: player });
+				navigation.navigate('ScoreEdit', {round, player, game});
 			}}
         >
             <Text style={{fontSize:20, textAlign:'center'}}>{innerText}</Text>

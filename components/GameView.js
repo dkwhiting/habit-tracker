@@ -16,9 +16,9 @@ const GameView = ({game}) => {
             <Stack.Screen
                 name="ScoreEdit"
                 component={ScoreEdit}
-                options={({ navigation }) => ({
+                options={({ navigation, route }) => ({
                     presentation: 'modal',
-                    title: 'Edit Score',
+                    title: `Round ${route.params?.round + 1}: ${route.params?.player.name || 'Player'}`,
                 })}
             />
         </Stack.Navigator>

@@ -89,7 +89,7 @@ const Scoreboard = ({ game }) => {
 									<Text numberOfLines={1} style={[styles.headerCell, {textAlign: 'center', flexWrap:'nowrap'}]}>Round {parseInt(i) + 1}</Text>
 									{orderedPlayers.map((player, i) => {
 										return (
-											<ScoreCell key={i} round={round} player={player} i={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {textAlign: 'right'}]}/>
+											<ScoreCell key={i} game={game} round={round} player={player} i={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {textAlign: 'right'}]}/>
 										)
 									})}
 								</View>

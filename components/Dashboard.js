@@ -1,7 +1,6 @@
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import GameTile from './GameTile';
-import { Iconify } from 'react-native-iconify';
 import {
 	useDeleteGameMutation,
 	useFetchAllGamesQuery,
@@ -9,6 +8,7 @@ import {
 import { UserContext } from './Main';
 import SkeletonGameTile from './SkeletonGameTile';
 import LoadingModal from './LoadingModal';
+import Monicon from '@monicon/native';
 
 const Dashboard = ({ showNewGame, setShowNewGame }) => {
 	const [expandedTile, setExpandedTile] = useState(null);
@@ -46,8 +46,8 @@ const Dashboard = ({ showNewGame, setShowNewGame }) => {
 						}}
 						onPress={() => setSortAscending(!sortAscending)}
 					>
-						<Iconify
-							icon="flowbite:sort-outline"
+						<Monicon
+							name="flowbite:sort-outline"
 							size={25}
 						/>
 						<Text>{sortAscending ? 'Oldest' : 'Newest'}</Text>
