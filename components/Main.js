@@ -37,10 +37,6 @@ const Main = () => {
 		});
 	}, []);
 
-	useEffect(() => {
-		console.log(currentUser);
-	}, [currentUser]);
-
 	return (
 		<>
 			{!currentUser && showAuth ? (

@@ -32,68 +32,91 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 	const [contentBottom, setContentBottom] = useState(0);
 	const user = useContext(UserContext);
 	const [name, setName] = useState('');
-	const [players, setPlayers] = useState([
-		{
-			name: user.displayName,
-			color: colors[0],
-			score: [0],
-			icon: { name: 'ghost', type: 'material-community' },
+	const [scores, setScores] = useState(		{ 
+			round_1: {
+				player_1: 0
+			}
+		},);
+	const [players, setPlayers] = useState(
+		{ 
+			player_1: {
+				name: user.displayName,
+				color: colors[0],
+				icon: { name: 'ghost', type: 'material-community' },
+			}
 		},
-	]);
-	const [newPlayer, setNewPlayer] = useState('');
+	);
+	const [newPlayerName, setNewPlayerName] = useState('');
 	const [highestWins, setHighestWins] = useState(true);
-	const [error, setError] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
 	const [
-		addGame, // This is the mutation trigger
-		{ isLoading: isUpdating }, // This is the destructured mutation result
+		addGame,
+		{ isLoading: isUpdating, isError, error },
 	] = useAddNewGameMutation();
-
-	//Handle modal animation
-	const showModalAnim = useRef(new Animated.Value(windowHeight - 90)).current;
-
 	const handleSubmit = async () => {
-		try {
-			if (!name) {
-				setError('Name can not be left blank');
-			} else if (players.length < 1) {
-				setError('You must add at least one player');
-			} else {
-				const date = new Date();
-				const gameId = Date.now().toString();
-				const body = {
-					name,
-					players,
-					highestWins,
-					created: date.toISOString().slice(0, 10).replace(/-/g, ''),
-					completed: false,
-				};
-				const newGame = await addGame({
-					userId: user.uid,
-					gameId: gameId,
-					body,
-				});
+		if (!name) {
+			setErrorMessage('Name cannot be left blank');
+		} else if (Object.keys(players).length < 1) {
+			setErrorMessage('You must add at least one player');
+		} else {
+			const date = new Date();
+			const gameId = Date.now().toString();
+			const body = {
+				ownerId: user.uid,
+				name,
+				players,
+				scores,
+				highestWins,
+				created: date.toISOString().slice(0, 10).replace(/-/g, ''),
+				completed: false,
+			};
+			console.log(body)
+			// Perform the mutation to add the game
+			const newGame = await addGame({
+				ownerId: user.uid,
+				gameId: gameId,
+				body,
+			}).unwrap(); // Unwrap the result to handle errors automatically
+	
+			// Handle success and navigate if newGame is defined
+			if (newGame?.data) {
+				console.log('this is the new Game', newGame);
 				navigation.pop();
 				navigation.navigate('LiveGame', { game: newGame.data });
 			}
-		} catch (error) {
-			console.error(error);
 		}
 	};
+	
+	// Optionally, you can handle displaying the error elsewhere in the UI
+	useEffect(() => {
+		if (isError) {
+			console.error('Error:', error); // Log the error for debugging
+			setErrorMessage('Failed to create the game. Please try again.');
+		}
+	}, [isError, error]);
 
 	const handleAddPlayer = () => {
-		if (newPlayer.length > 0) {
-			setPlayers([
-				...players,
-				{
-					id: players.length - 1,
-					name: newPlayer,
-					color: colors[colorCalc(players.length)],
-					icon: icons[Math.floor(Math.random() * icons.length - 1)],
-					score: [0],
+		if (newPlayerName.length > 0) {
+			const playerKey = `player_${Object.keys(players).length + 1}`;
+			const newPlayerData = {
+				name: newPlayerName,
+				color: colors[colorCalc(Object.keys(players).length)],
+				icon: icons[Math.floor(Math.random() * icons.length)],
+			};
+			setPlayers((prevPlayers) => ({
+				...prevPlayers,
+				[playerKey]: newPlayerData,
+			}));
+			setScores((prevScores) => ({
+				...prevScores,
+				[`round_1`]: {
+					...prevScores[`round_1`],
+					[playerKey]: 0,
 				},
-			]);
-			setNewPlayer('');
+			}));
+			setNewPlayerName('');
 		}
+		console.log(players)
 	};
 
 	return (
@@ -111,10 +134,10 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 					}}
 					value={name}
 					type="string"
-					placeholder={!error ? 'Enter a name for your game' : error}
-					placeholderTextColor={!error ? '#BABABA' : 'red'}
+					placeholder={!errorMessage.length ? 'Enter a name for your game' : errorMessage.length}
+					placeholderTextColor={!errorMessage.length ? '#BABABA' : 'red'}
 					onChangeText={setName}
-					onFocus={() => setError('')}
+					onFocus={() => setErrorMessage('')}
 					inputGoal="text"
 					// autoFocus
 				/>
@@ -138,19 +161,18 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 						>
 							Players
 						</Text>
-						{players.length > 0
-							? players.map((player, index) => {
-									return (
-										<PlayerSelectTile
-											player={player}
-											key={index}
-											players={players}
-											setPlayers={setPlayers}
-											index={index}
-										/>
-									);
-							  })
-							: null}
+						{Object.entries(players).length > 0 && Object.entries(players).map(([key, player], index) => {
+							console.log(player);
+							return (
+								<PlayerSelectTile
+									player={player}
+									key={key}
+									players={players}
+									setPlayers={setPlayers}
+									index={index}
+								/>
+							);
+						})}
 						<TextInput
 							style={{
 								fontSize: 18,
@@ -158,10 +180,10 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 								backgroundColor: 'white',
 								borderRadius: 10,
 							}}
-							value={newPlayer}
+							value={newPlayerName}
 							type="string"
 							placeholder="Player name"
-							onChangeText={setNewPlayer}
+							onChangeText={setNewPlayerName}
 							inputGoal="text"
 							autoComplete="off"
 							autoCorrect={false}

@@ -20,7 +20,6 @@ const Register = ({ styles, form, setForm, setShowPage }) => {
 		Alert.alert(error.status, error.message, [
 			{
 				text: 'Cancel',
-				onPress: () => console.log('Cancel Pressed'),
 				style: 'cancel',
 			},
 		]);

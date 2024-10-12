@@ -2,22 +2,24 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import ScoreCell from './ScoreCell';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import usePlayerTotalScore from '../hooks/usePlayerTotalScore';
+import useSortPlayersByScore from '../hooks/useSortPlayersByScore';
 
 const Scoreboard = ({ game }) => {
-	const [rounds, setRounds] = useState([]);
-	const [orderedPlayers, setOrderedPlayers] = useState()
 	const [leftColumnWidth, setLeftColumnWidth] = useState(0);
 	const [rightColumnWidth, setRightColumnWidth] = useState(0);
 	const [scrollViewWidth, setScrollViewWidth] = useState(0)
 	const scrollViewRef = useRef(null);
 	const screenWidth = Dimensions.get('window').width;
+	const sortedPlayers = useSortPlayersByScore(game)
+
+	console.log('THIS IS SORTED PLAYERS', sortedPlayers)
 
 	const calculateScrollOffsets = (event) => {
 		const { width } = event.nativeEvent.layout;
-		const columnWidth = width / rounds
+		const columnWidth = width / Object.keys(game.scores).length
 		const offsets = []
-		rounds.forEach((round, i)=>{ 
-			console.log(round)
+		Object.keys(game.scores).forEach((round, i)=>{ 
 			offsets.push(columnWidth * (i + 1))
 		})
 	} 
@@ -41,31 +43,14 @@ const Scoreboard = ({ game }) => {
 		}
 	  }, [scrollViewWidth]);
 
-	const sortPlayers = () => {
-		const sortedPlayers = [...game.players].sort((a, b) => {
-			const totalScoreA = a.score.reduce((acc, score) => acc + score, 0);
-			const totalScoreB = b.score.reduce((acc, score) => acc + score, 0);
-			return totalScoreB - totalScoreA;
-		})
-		return sortedPlayers
-	}
-
-	useEffect(() => {
-		const highest = [...game.players].sort(
-			(a, b) => b.score.length - a.score.length
-		)[0].score;
-		setRounds(highest);
-		setOrderedPlayers(sortPlayers())
-	}, [game]);
-
 	return (
 		<View style={{display:'flex', flexDirection: 'column', gap:4, height:'100%'}}>
 			<View style={styles.scoresContainer}>
 				<View style={styles.playersColumn} onLayout={handleLeftColumnLayout}>
 					<Text style={styles.headerCell}>Players</Text>
 					{
-					orderedPlayers 
-						? orderedPlayers.map((player, i) => <Text key={i} style={i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd}>{player.name}</Text>)
+					Object.entries(sortedPlayers) 
+						? Object.entries(sortedPlayers).map(([key, player], i) => <Text key={i} style={i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd}>{player.name}</Text>)
 						: null
 					}
 				</View>
@@ -83,13 +68,13 @@ const Scoreboard = ({ game }) => {
 					}}
 				>
 					<View style={styles.roundsContainer} onLayout={calculateScrollOffsets}>
-						{[...rounds].reverse().map((round, i) => {
+						{Object.entries(game.scores).map(([roundKey, round], i) => {
 							return (
 								<View key={i} style={[styles.roundsColumn, {flex: 1, flexWrap:'nowrap'}]}>
 									<Text numberOfLines={1} style={[styles.headerCell, {textAlign: 'center', flexWrap:'nowrap'}]}>Round {parseInt(i) + 1}</Text>
-									{orderedPlayers.map((player, i) => {
+									{Object.entries(sortedPlayers).map(([playerKey, player], i) => {
 										return (
-											<ScoreCell key={i} game={game} round={round} player={player} i={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {textAlign: 'right'}]}/>
+											<ScoreCell key={i} game={game} roundKey={roundKey} playerKey={playerKey} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {textAlign: 'right'}]}/>
 										)
 									})}
 								</View>
@@ -100,13 +85,11 @@ const Scoreboard = ({ game }) => {
 				<View style={styles.totalsColumn} onLayout={handleRightColumnLayout}>
 					<Text style={[styles.headerCell, {textAlign:'center'}]}>Total</Text>
 					{
-						orderedPlayers 
-							? orderedPlayers.map((player, i) => {
+						Object.entries(sortedPlayers) 
+							? Object.entries(sortedPlayers).map(([key, player], i) => {
 								return (
 									<Text key={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {fontWeight:'bold', textAlign:'center'}]}>
-										{player.score.reduce((a,b)=>{
-											return a + b
-										},0)}
+										{usePlayerTotalScore(player, )}
 									</Text>
 								)
 							})

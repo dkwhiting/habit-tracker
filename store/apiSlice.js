@@ -46,28 +46,35 @@ export const firestoreApi = createApi({
 			providesTags: ['Games'],
 		}),
 		addNewGame: builder.mutation({
-			async queryFn({ userId, gameId, body }) {
-				try {
-					await setDoc(doc(db, 'users', userId, 'games', gameId), body);
-					const docRef = doc(db, 'users', userId, 'games', gameId);
-					const docSnap = await getDoc(docRef);
-					let game;
-
-					if (docSnap.exists()) {
-						console.log('Document data:', docSnap.data());
-						game = docSnap.data();
-					} else {
-						// docSnap.data() will be undefined in this case
-						console.log('No such document!');
-					}
-					return { data: game };
-				} catch (error) {
-					console.error(error.message);
-					return { error: error.message };
+			async queryFn({ ownerId, gameId, body }) {
+				console.log('HERE', ownerId, gameId, body)
+			  try {
+				const docRef = doc(db, 'users', ownerId, 'games', gameId);
+				
+				// Use setDoc with { merge: true } to create or update the document
+				await setDoc(docRef, body, { merge: true });
+		  
+				// Fetch the newly created or updated document
+				const docSnap = await getDoc(docRef);
+				let game;
+		  
+				if (docSnap.exists()) {
+				  console.log('Document data:', docSnap.data());
+				  game = docSnap.data();
+				} else {
+				  console.log('No such document!');
+				  game = null; // This should ideally not happen because setDoc guarantees creation
 				}
+		  
+				return { data: game };
+			  } catch (error) {
+				console.error(error.message);
+				return { error: error.message };
+			  }
 			},
 			invalidatesTags: ['Games'],
-		}),
+		  }),
+		  
 		deleteGame: builder.mutation({
 			async queryFn({ userId, gameId }) {
 				try {
@@ -118,6 +125,7 @@ export const firestoreApi = createApi({
 		updateUser: builder.mutation({
 			async queryFn({ email, password, displayName }) {
 				let user;
+				console.log(dusplayName, auth.currentUser)
 				if (displayName) {
 					updateProfile(auth.currentUser, {
 						displayName: displayName,
@@ -145,6 +153,36 @@ export const firestoreApi = createApi({
 			},
 			invalidatesTags: ['User'],
 		}),
+		updateRoundScore: builder.mutation({
+			async queryFn({ ownerId, gameId, playerKey, roundKey, newScore }) {
+			  try {
+				// Get the document reference for the game
+				const gameDocRef = doc(db, 'users', ownerId, 'games', gameId);
+		  
+				// Check if the game document exists
+				const gameDocSnap = await getDoc(gameDocRef);
+		  
+				if (!gameDocSnap.exists()) {
+				  console.log('No such game!');
+				  return { error: 'Game not found' };
+				}
+		  
+				// Update the score for the specific player in the specified round
+				await updateDoc(gameDocRef, {
+				  [`scores.${roundKey}.${playerKey}`]: newScore
+				});
+		  
+				// Return the updated game data
+				const updatedGameData = (await getDoc(gameDocRef)).data();
+		  
+				return { data: updatedGameData };
+			  } catch (error) {
+				console.error(error.message);
+				return { error: error.message };
+			  }
+			},
+			invalidatesTags: (result, error, { gameId }) => [{ type: 'Games', id: gameId }],
+		  }),
 	}),
 });
 
@@ -155,4 +193,5 @@ export const {
 	useSignInUserMutation,
 	useRegisterUserMutation,
 	useUpdateUserMutation,
+	useUpdateRoundScoreMutation,
 } = firestoreApi;

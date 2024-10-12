@@ -9,7 +9,6 @@ const Settings = ({ setShowAuth }) => {
 		signOut(auth)
 			.then(() => {
 				setShowAuth(false);
-				console.log('hi');
 				// Sign-out successful.
 			})
 			.catch((error) => {

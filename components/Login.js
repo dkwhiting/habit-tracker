@@ -17,7 +17,6 @@ const Login = ({ styles, form, setForm, setShowPage, signInUser }) => {
 		Alert.alert(error.status, error.message, [
 			{
 				text: 'Cancel',
-				onPress: () => console.log('Cancel Pressed'),
 				style: 'cancel',
 			},
 		]);

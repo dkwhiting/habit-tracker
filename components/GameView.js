@@ -18,7 +18,7 @@ const GameView = ({game}) => {
                 component={ScoreEdit}
                 options={({ navigation, route }) => ({
                     presentation: 'modal',
-                    title: `Round ${route.params?.round + 1}: ${route.params?.player.name || 'Player'}`,
+                    title: `Round ${route.params?.roundIndex + 1}: ${route.params?.game.players[route.params?.playerKey] || 'Player'}`,
                 })}
             />
         </Stack.Navigator>

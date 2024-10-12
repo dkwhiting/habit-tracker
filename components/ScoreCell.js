@@ -1,25 +1,25 @@
 import { useNavigation } from "@react-navigation/native"
 import React, { useState } from "react"
 import { TouchableOpacity, StyleSheet, Text } from "react-native"
+import usePlayerRoundScore from "../hooks/usePlayerRoundScore";
 
-const ScoreCell = ({game, round, player, style}) => {
-    const [innerText, setInnerText] = useState(player.score[round] ? player.score[round] : '-')
+const ScoreCell = ({game, roundKey, playerKey, style}) => {
     const navigation = useNavigation();
+    const playerRoundScore = usePlayerRoundScore(game, roundKey, playerKey)
+    console.log(game)
 
     return (
         <TouchableOpacity 
             style={style}
             onPress={() => {
-				navigation.navigate('ScoreEdit', {round, player, game});
+				navigation.navigate('ScoreEdit', {game, roundKey, playerKey});
 			}}
         >
-            <Text style={{fontSize:20, textAlign:'center'}}>{innerText}</Text>
+            <Text style={{fontSize:20, textAlign:'center'}}>
+                {playerRoundScore}
+            </Text>
         </TouchableOpacity>
    )
 }
-
-const styles = StyleSheet.create({
-
-})
 
 export default ScoreCell

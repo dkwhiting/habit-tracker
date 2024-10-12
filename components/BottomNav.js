@@ -48,7 +48,6 @@ function BottomNav({ setShowAuth }) {
 				<Tab.Screen
 					name="Dashboard"
 					children={() => <Dashboard />}
-					onPress={() => console.log('HELLO')}
 					options={{
 						unmountOnBlur: true,
 						tabBarShowLabel: false,

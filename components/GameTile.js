@@ -7,6 +7,7 @@ import { dateToString } from '../utils';
 import { ListItem } from '@rneui/themed-edge';
 import { UserContext } from './Main';
 import { useNavigation } from '@react-navigation/native';
+import useSortPlayersByScore from '../hooks/useSortPlayersByScore';
 
 const GameTile = ({
 	game,
@@ -17,22 +18,21 @@ const GameTile = ({
 }) => {
 	const expandAnim = useRef(new Animated.Value(50)).current;
 	const fadeAnim = useRef(new Animated.Value(0)).current;
-	const gamePlayers = [...game?.players];
+	const sortedPlayers = useSortPlayersByScore(game)
 	const date = new Date();
 	const today = date.toISOString().slice(0, 10).replace(/-/g, '');
 	const tomorrow = date.toISOString().slice(0, 10).replace(/-/g, '') + 1;
 	const user = useContext(UserContext);
 	const navigation = useNavigation();
-
 	const fadeIn = () => {
 		// Will change fadeAnim value to 1 in 5 seconds
-		if (game.players.length >= 3) {
+		if (Object.entries(game.players).length >= 3) {
 			Animated.timing(expandAnim, {
 				toValue: 225,
 				duration: 200,
 				useNativeDriver: false,
 			}).start();
-		} else if (game.players.length === 2) {
+		} else if (Object.entries(game.players).length === 2) {
 			Animated.timing(expandAnim, {
 				toValue: 190,
 				duration: 200,
@@ -165,7 +165,7 @@ const GameTile = ({
 								type="material-icons"
 								color="white"
 							/>
-							<Text> {game.players.length}</Text>
+							<Text> {Object.entries(game.players).length}</Text>
 						</View>
 					</View>
 					<Animated.View
@@ -198,42 +198,32 @@ const GameTile = ({
 							</Text>
 							<Text style={{ flex: 1 }}>Last Played:</Text>
 						</View>
-						{gamePlayers
-							.sort((a, b) => {
-								if (game.highestWins) {
-									return (
-										b.score.reduce(function (a, b) {
-											return a + b;
-										}, 0) -
-										a.score.reduce(function (a, b) {
-											return a + b;
-										}, 0)
-									);
-								}
+						{Object.entries(sortedPlayers)
+							.slice(0, 3) // Take the top 3 players
+							.map(([key, player], index) => { // Destructure key and player
 								return (
-									a.score.reduce(function (a, b) {
-										return a + b;
-									}, 0) -
-									b.score.reduce(function (a, b) {
-										return a + b;
-									}, 0)
-								);
-							})
-							.slice(0, 3)
-							.map((player, index) => {
-								return (
-									<GameTileLeaders
-										key={index}
-										player={player}
-										index={index}
-									/>
+								<GameTileLeaders
+									key={key} // Use the player key as the unique key
+									playerKey={key} // Pass the player key (e.g., player_1) to your component
+									player={player} // Also pass the player data if needed
+									index={index}
+									scores={game.scores}
+								/>
 								);
 							})}
-						<Button
-							title="Resume Game"
-							color="black"
-							onPress={() => navigation.navigate('LiveGame', { game: game })}
-						/>
+						<View style={{display:'flex', flexDirection: 'row', gap: 8,}}>
+							<Button
+								style={{flexGrow:1}}
+								title="Resume Game"
+								color="black"
+								onPress={() => navigation.navigate('LiveGame', { game: game })}
+								/>
+							<Button
+								title="Delete"
+								color="black"
+								onPress={() => {console.log('delete game goes here')}}
+								/>
+						</View>
 					</Animated.View>
 				</Animated.View>
 			</Pressable>

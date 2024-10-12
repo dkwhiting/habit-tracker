@@ -18,6 +18,7 @@ const SetUserDetails = ({ setNeedsDisplayName }) => {
 	});
 
 	const handleSubmit = () => {
+		console.log(form)
 		try {
 			updateUser({ displayName: form.displayName });
 			setNeedsDisplayName(false);

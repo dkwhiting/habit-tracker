@@ -3,8 +3,10 @@ import React from 'react';
 import GoldMedal from '../assets/svgs/GoldMedal';
 import SilverMedal from '../assets/svgs/SilverMedal';
 import BronzeMedal from '../assets/svgs/BronzeMedal';
+import usePlayerTotalScore from '../hooks/usePlayerTotalScore';
 
-const GameTileLeaders = ({ player, index }) => {
+const GameTileLeaders = ({scores, player, playerKey, index }) => {
+	const scoreTotal = usePlayerTotalScore(scores, playerKey)
 	return (
 		<View
 			style={{
@@ -55,9 +57,7 @@ const GameTileLeaders = ({ player, index }) => {
 			) : null}
 			<Text>{player.name}</Text>
 			<Text style={{ flex: 1, textAlign: 'right' }}>
-				{player.score.reduce(function (a, b) {
-					return a + b;
-				}, 0)}
+				{scoreTotal}
 			</Text>
 		</View>
 	);

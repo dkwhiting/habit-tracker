@@ -2,21 +2,21 @@ import Monicon from '@monicon/native';
 import React, { useState } from 'react'
 import { TouchableOpacity, StyleSheet, View, Text, Dimensions } from 'react-native'
 
-const NumPad = ({number, setNumber, negativeNum, setNegativeNum}) => {
+const NumPad = ({newScore, setNewScore, negativeNum, setNegativeNum}) => {
     const appendNum = (num) => {
-        const numString = number.toString()
+        const numString = newScore.toString()
         if (numString.length >= 12){
             return
         }
-        setNumber(prevNumber => parseInt(prevNumber.toString() + num));
+        setNewScore(prevNumber => parseInt(prevNumber.toString() + num));
     };
 
     const backspace = () => {
-        const numString = number.toString()
+        const numString = newScore.toString()
         if ((numString[0] === '-' && numString.length === 2) || numString.length === 1){
-            setNumber(0)
+            setNewScore(0)
         } else {
-            setNumber(numString.slice(0, numString.length - 1))
+            setNewScore(numString.slice(0, numString.length - 1))
         }
     }
 
