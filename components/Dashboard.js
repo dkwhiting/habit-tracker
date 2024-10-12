@@ -24,10 +24,6 @@ const Dashboard = ({ showNewGame, setShowNewGame }) => {
 		{ isLoading: deleteUpdating }, // This is the destructured mutation result
 	] = useDeleteGameMutation();
 
-	useEffect(() => {
-		console.log('data updated', data)
-	},[data])
-
 	return (
 		<>
 			{gamesLoading || deleteUpdating ? <LoadingModal /> : null}

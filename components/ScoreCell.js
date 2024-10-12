@@ -6,12 +6,12 @@ import usePlayerRoundScore from "../hooks/usePlayerRoundScore";
 const ScoreCell = ({game, roundKey, playerKey, style}) => {
     const navigation = useNavigation();
     const playerRoundScore = usePlayerRoundScore(game, roundKey, playerKey)
-    console.log(game)
 
     return (
         <TouchableOpacity 
             style={style}
             onPress={() => {
+                console.log('Navigating to ScoreEdit with ', game)
 				navigation.navigate('ScoreEdit', {game, roundKey, playerKey});
 			}}
         >

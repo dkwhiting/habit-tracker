@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
 	StyleSheet,
-	SafeAreaView,
-	View,
-	Text,
-	TouchableOpacity,
-	TextInput,
-	Alert,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -17,7 +11,7 @@ import Register from './Register';
 import Login from './Login';
 import SetUserDetails from './SetUserDetails';
 
-const AuthPage = ({ signInUser }) => {
+const AuthPage = ({ signInUser, setShowAuth }) => {
 	const [errorMessage, setErrorMessage] = useState([]);
 	const [showPage, setShowPage] = useState('login');
 	const [form, setForm] = useState({

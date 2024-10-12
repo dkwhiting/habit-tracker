@@ -6,14 +6,13 @@ import usePlayerTotalScore from '../hooks/usePlayerTotalScore';
 import useSortPlayersByScore from '../hooks/useSortPlayersByScore';
 
 const Scoreboard = ({ game }) => {
+	console.log('SCOREBOARD GAME', game)
 	const [leftColumnWidth, setLeftColumnWidth] = useState(0);
 	const [rightColumnWidth, setRightColumnWidth] = useState(0);
 	const [scrollViewWidth, setScrollViewWidth] = useState(0)
 	const scrollViewRef = useRef(null);
 	const screenWidth = Dimensions.get('window').width;
 	const sortedPlayers = useSortPlayersByScore(game)
-
-	console.log('THIS IS SORTED PLAYERS', sortedPlayers)
 
 	const calculateScrollOffsets = (event) => {
 		const { width } = event.nativeEvent.layout;

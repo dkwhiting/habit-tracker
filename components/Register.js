@@ -62,7 +62,6 @@ const Register = ({ styles, form, setForm, setShowPage }) => {
 			password: form.password,
 			displayName: form.displayName,
 		});
-		console.log(response);
 	};
 
 	return (

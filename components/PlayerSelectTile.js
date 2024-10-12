@@ -5,7 +5,6 @@ import { ListItem } from '@rneui/themed-edge';
 import { colorCalc, colors } from '../data';
 
 const PlayerSelectTile = ({ index, player, players, setPlayers }) => {
-	console.log('PLAYER', player)
 	const handleRemovePlayer = () => {
 		let newList = [...players].filter((x) => x.id !== player.id);
 		newList.forEach(

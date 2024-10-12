@@ -61,9 +61,6 @@ const LandingPage = ({ setShowAuth }) => {
 			>
 				ScoreHQ
 			</Text>
-			<Pressable>
-				<Text></Text>
-			</Pressable>
 			<LandingLogo />
 			<Pressable
 				onPress={() => setShowAuth(true)}

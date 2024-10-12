@@ -12,10 +12,10 @@ const GameView = ({game}) => {
                 name="GameView"
                 children={() => <Scoreboard game={game} />}
                 options={{headerShown: false}}
-            />
+                />
             <Stack.Screen
                 name="ScoreEdit"
-                component={ScoreEdit}
+                children={() => <ScoreEdit game={game} />}
                 options={({ navigation, route }) => ({
                     presentation: 'modal',
                     title: `Round ${route.params?.roundIndex + 1}: ${route.params?.game.players[route.params?.playerKey] || 'Player'}`,

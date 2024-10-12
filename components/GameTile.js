@@ -105,7 +105,7 @@ const GameTile = ({
 					icon={{ name: 'delete', color: 'white' }}
 					buttonStyle={{
 						minHeight: '100%',
-						backgroundColor: 'red',
+						backgroundColor: '#FF3B30',
 						borderRadius: 10,
 						marginLeft: 6,
 					}}
@@ -211,19 +211,12 @@ const GameTile = ({
 								/>
 								);
 							})}
-						<View style={{display:'flex', flexDirection: 'row', gap: 8,}}>
 							<Button
 								style={{flexGrow:1}}
 								title="Resume Game"
 								color="black"
-								onPress={() => navigation.navigate('LiveGame', { game: game })}
+								onPress={() => navigation.navigate('LiveGame', { game, gameId: game.gameId })}
 								/>
-							<Button
-								title="Delete"
-								color="black"
-								onPress={() => {console.log('delete game goes here')}}
-								/>
-						</View>
 					</Animated.View>
 				</Animated.View>
 			</Pressable>

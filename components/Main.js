@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import BottomNav from './BottomNav';
 import AuthPage from './AuthPage';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -9,10 +9,8 @@ import LandingPage from './LandingPage';
 import SetUserDetails from './SetUserDetails';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import NewGame from './NewGame';
-import NewGameButton from './NewGameButton';
-import PlusCircle from '../assets/svgs/PlusCircle';
 import { Pressable } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import LiveGame from './LiveGame';
 
 export const UserContext = createContext();
@@ -40,7 +38,7 @@ const Main = () => {
 	return (
 		<>
 			{!currentUser && showAuth ? (
-				<AuthPage signInUser={signInUser} />
+				<AuthPage signInUser={signInUser} setShowAuth={setShowAuth} />
 			) : !currentUser ? (
 				<LandingPage setShowAuth={setShowAuth} />
 			) : isLoading ? (

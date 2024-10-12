@@ -45,13 +45,34 @@ export const firestoreApi = createApi({
 			},
 			providesTags: ['Games'],
 		}),
+		fetchSingleGame: builder.query({
+			async queryFn({ userId, gameId }) {
+				try {
+					// Reference the specific game document
+					const ref = doc(db, 'users', userId, 'games', gameId);
+					const docSnapshot = await getDoc(ref);
+		
+					// Check if the document exists
+					if (!docSnapshot.exists()) {
+						return { error: 'Game not found' };
+					}
+		
+					// Return the game data
+					return { data: docSnapshot.data() };
+				} catch (error) {
+					console.error(error.message);
+					return { error: error.message };
+				}
+			},
+			providesTags: ['currentGame'],
+		}),
 		addNewGame: builder.mutation({
 			async queryFn({ ownerId, gameId, body }) {
-				console.log('HERE', ownerId, gameId, body)
 			  try {
+				// Get reference to the game document
 				const docRef = doc(db, 'users', ownerId, 'games', gameId);
 				
-				// Use setDoc with { merge: true } to create or update the document
+				// Use setDoc to create or update the document with { merge: true }
 				await setDoc(docRef, body, { merge: true });
 		  
 				// Fetch the newly created or updated document
@@ -59,21 +80,28 @@ export const firestoreApi = createApi({
 				let game;
 		  
 				if (docSnap.exists()) {
-				  console.log('Document data:', docSnap.data());
 				  game = docSnap.data();
+		  
+				  // Optional: Ensure that game data is serializable if needed
+				  game = {
+					...game,
+					// Ensure any non-serializable fields are excluded or transformed here
+				  };
 				} else {
-				  console.log('No such document!');
-				  game = null; // This should ideally not happen because setDoc guarantees creation
+				  console.error('No such document exists!');  // Should not happen
+				  return { error: 'Document does not exist' };
 				}
 		  
+				// Return the fetched game data
 				return { data: game };
 			  } catch (error) {
-				console.error(error.message);
+				// Return the error message if something goes wrong
 				return { error: error.message };
 			  }
 			},
 			invalidatesTags: ['Games'],
 		  }),
+		  
 		  
 		deleteGame: builder.mutation({
 			async queryFn({ userId, gameId }) {
@@ -89,72 +117,84 @@ export const firestoreApi = createApi({
 		}),
 		registerUser: builder.mutation({
 			async queryFn({ email, password, displayName }) {
-				let user;
-				let errorCode;
-				let errorMessage;
-				createUserWithEmailAndPassword(auth, email, password)
-					.then((userCredential) => {
-						// Signed up
-						user = userCredential.user;
-					})
-					.catch((error) => {
-						errorCode = error.code;
-						errorMessage = error.message;
-					});
-				console.error(errorCode);
-				console.error(errorMessage);
-				return { data: { error: { errorCode, errorMessage } } };
+			  try {
+				const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+				const user = userCredential.user;
+		  
+				// Optionally set displayName (if needed)
+				if (displayName) {
+				  await updateProfile(user, { displayName });
+				}
+		  
+				// Extract only serializable user properties
+				const userData = {
+				  uid: user.uid,
+				  email: user.email,
+				  displayName: user.displayName,
+				};
+		  
+				return { data: userData };
+			  } catch (error) {
+				return { error: { message: error.message, code: error.code } };
+			  }
 			},
 			invalidatesTags: ['User', 'Games'],
-		}),
+		  }),
+		  
+		  
 		signInUser: builder.mutation({
 			async queryFn({ email, password }) {
-				let user;
-				signInWithEmailAndPassword(auth, email, password)
-					.then((userCredential) => {
-						console.log('Signed in successfully with user');
-					})
-					.catch((error) => {
-						const errorCode = error.code;
-						const errorMessage = error.message;
-					});
-				return { data: null };
-			},
-			invalidatesTags: ['User', 'Games'],
+				try {
+				  const { user } = await signInWithEmailAndPassword(auth, email, password);
+				  
+				  // Extract only serializable fields from the user object
+				  const serializedUser = {
+					uid: user.uid,
+					email: user.email,
+					displayName: user.displayName,
+				  };
+			
+				  return { data: serializedUser };
+				} catch (error) {
+				  return { error: error.message };
+				}
+			  },
+			  invalidatesTags: ['User'],
 		}),
 		updateUser: builder.mutation({
 			async queryFn({ email, password, displayName }) {
-				let user;
-				console.log(dusplayName, auth.currentUser)
-				if (displayName) {
-					updateProfile(auth.currentUser, {
-						displayName: displayName,
-					})
-						.then(() => {
-							// Profile updated!
-							// ...
-						})
-						.catch((error) => {
-							const errorCode = error.code;
-							const errorMessage = error.message;
-						});
+			  const user = auth.currentUser;
+		  
+			  if (displayName) {
+				try {
+				  await updateProfile(user, { displayName });
+				} catch (error) {
+				  return { error: error.message };
 				}
-				sendEmailVerification(auth.currentUser)
-					.then(() => {
-						// Email verification sent!
-						// ...
-					})
-					.catch((error) => {
-						const errorCode = error.code;
-						const errorMessage = error.message;
-						// ..
-					});
-				return { data: null };
+			  }
+		  
+			  try {
+				await sendEmailVerification(user);
+			  } catch (error) {
+				return { error: error.message };
+			  }
+		  
+			  // Extract only serializable fields
+			  const serializedUser = {
+				uid: user.uid,
+				email: user.email,
+				displayName: user.displayName,
+
+			  };
+		  
+			  return { data: serializedUser };
 			},
 			invalidatesTags: ['User'],
-		}),
+		  }),
+		  
 		updateRoundScore: builder.mutation({
 			async queryFn({ ownerId, gameId, playerKey, roundKey, newScore }) {
+				console.log()
 			  try {
 				// Get the document reference for the game
 				const gameDocRef = doc(db, 'users', ownerId, 'games', gameId);
@@ -181,13 +221,14 @@ export const firestoreApi = createApi({
 				return { error: error.message };
 			  }
 			},
-			invalidatesTags: (result, error, { gameId }) => [{ type: 'Games', id: gameId }],
+			invalidatesTags: ['currentGame'],
 		  }),
 	}),
 });
 
 export const {
 	useFetchAllGamesQuery,
+	useFetchSingleGameQuery,
 	useAddNewGameMutation,
 	useDeleteGameMutation,
 	useSignInUserMutation,

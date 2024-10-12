@@ -1,6 +1,5 @@
-import { View, Text } from 'react-native';
 import React from 'react';
-import { Button } from 'react-native-elements';
+import { View, Button } from 'react-native';
 import { getAuth, signOut } from 'firebase/auth';
 
 const Settings = ({ setShowAuth }) => {
@@ -21,8 +20,8 @@ const Settings = ({ setShowAuth }) => {
 		<View style={{ paddingTop: 70 }}>
 			<Button
 				title="Sign out"
-				onPress={() => handleSignOut()}
-			></Button>
+				onPress={handleSignOut} // No need for arrow function
+			/>
 		</View>
 	);
 };

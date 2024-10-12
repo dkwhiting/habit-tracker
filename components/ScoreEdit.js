@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import NumPad from "./NumPad";
 import { useUpdateRoundScoreMutation } from "../store/apiSlice";
+import { useRoute } from "@react-navigation/native";
 
 const ScoreEdit = ({ route, navigation }) => {
     const {roundKey, playerKey, game} = route.params;
-    console.log(playerKey)
+    console.log('SCORE EDIT GAME', game)
     const [newScore, setNewScore] = useState(
         game.scores[roundKey]?.[playerKey] !== undefined ? game.scores[roundKey][playerKey].toString() : '0'
       );    
@@ -15,17 +16,25 @@ const ScoreEdit = ({ route, navigation }) => {
 		{ isLoading: isUpdating }, // This is the destructured mutation result
 	] = useUpdateRoundScoreMutation();
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const body = {
             ownerId: game.ownerId,
-            gameId: game.id,
+            gameId: game.gameId,
             playerKey,
             roundKey,
-            newScore
+            newScore: Number(newScore), // Convert to number if needed
+        };
+        console.log('BODY', body)
+        try {
+            const result = await updateRoundScore(body).unwrap(); // Use unwrap to handle errors properly
+            console.log('Updated game data:', result); // This can help you debug the updated game data
+            navigation.pop();
+        } catch (error) {
+            console.error('Failed to update round score:', error);
+            // Optionally show an error message to the user
         }
-        updateRoundScore(body)
-        console.log(body)
-    }
+    };
+    
 
     return (
         <View style={{display:'flex',flexDirection:'column',justifyContent:'space-between',height:'100%'}}>
