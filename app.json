@@ -29,11 +29,11 @@
     "plugins": [
       "expo-font"
     ],
+    "owner": "dkwhiting",
     "extra": {
       "eas": {
         "projectId": "79e93790-46ce-4047-bc24-7794413cebc6"
       }
-    },
-    "owner": "dkwhiting"
+    }
   }
 }
