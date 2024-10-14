@@ -3,6 +3,8 @@ export const colors = [
 	'239, 71, 111',
 	'27, 154, 170',
 	'255, 196, 61',
+	'151, 97, 210',
+	'255, 139, 61',
 ];
 
 export const icons = [
@@ -34,8 +36,8 @@ export const icons = [
 ];
 
 export const colorCalc = (index) => {
-	if (index + 1 > 4) {
-		return colorCalc(index - 4);
+	if (index + 1 > 6) {
+		return colorCalc(index - 6);
 	}
 	return index;
 };

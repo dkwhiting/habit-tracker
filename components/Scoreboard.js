@@ -4,15 +4,24 @@ import ScoreCell from './ScoreCell';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import usePlayerTotalScore from '../hooks/usePlayerTotalScore';
 import useSortPlayersByScore from '../hooks/useSortPlayersByScore';
+import { useInitializeNewRoundMutation } from '../store/apiSlice';
 
 const Scoreboard = ({ game }) => {
-	console.log('SCOREBOARD GAME', game)
 	const [leftColumnWidth, setLeftColumnWidth] = useState(0);
 	const [rightColumnWidth, setRightColumnWidth] = useState(0);
 	const [scrollViewWidth, setScrollViewWidth] = useState(0)
 	const scrollViewRef = useRef(null);
 	const screenWidth = Dimensions.get('window').width;
 	const sortedPlayers = useSortPlayersByScore(game)
+	const [initializeNewRound, {isLoading, isError, error}] = useInitializeNewRoundMutation();
+
+	const handleEndRound = async () => {
+		try {
+			await initializeNewRound(game)
+		} catch (error) {
+			console.error(error)
+		}
+	}
 
 	const calculateScrollOffsets = (event) => {
 		const { width } = event.nativeEvent.layout;
@@ -85,10 +94,10 @@ const Scoreboard = ({ game }) => {
 					<Text style={[styles.headerCell, {textAlign:'center'}]}>Total</Text>
 					{
 						Object.entries(sortedPlayers) 
-							? Object.entries(sortedPlayers).map(([key, player], i) => {
+							? Object.entries(sortedPlayers).map(([playerKey, player], i) => {
 								return (
 									<Text key={i} style={[i % 2 === 0 ? styles.singleCellEven : styles.singleCellOdd, {fontWeight:'bold', textAlign:'center'}]}>
-										{usePlayerTotalScore(player, )}
+										{usePlayerTotalScore(game.scores, playerKey)}
 									</Text>
 								)
 							})
@@ -98,7 +107,7 @@ const Scoreboard = ({ game }) => {
 			</View>
 			<TouchableOpacity
 				style={styles.endRound}
-				onPress={()=>{}}
+				onPress={handleEndRound}
 			>
 				<Text style={{color:'white', textAlign:'center', fontSize:20, fontWeight:'bold'}}>End Round</Text>
 			</TouchableOpacity>

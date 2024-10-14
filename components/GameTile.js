@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated, TouchableOpacity } from 'react-native';
 import React, { useContext, useEffect, useLayoutEffect, useRef } from 'react';
 import { colorCalc, colors } from '../data';
 import { Button, Icon } from 'react-native-elements';
@@ -56,7 +56,7 @@ const GameTile = ({
 	const fadeOut = () => {
 		// Will change fadeAnim value to 0 in 3 seconds
 		Animated.timing(expandAnim, {
-			toValue: 50,
+			toValue: 45,
 			duration: 200,
 			useNativeDriver: false,
 		}).start();
@@ -104,7 +104,7 @@ const GameTile = ({
 					}}
 					icon={{ name: 'delete', color: 'white' }}
 					buttonStyle={{
-						minHeight: '100%',
+						height: 45,
 						backgroundColor: '#FF3B30',
 						borderRadius: 10,
 						marginLeft: 6,
@@ -152,7 +152,7 @@ const GameTile = ({
 						}}
 					/>
 					<View style={styles.activityTile}>
-						<Text>{game.name}</Text>
+						<Text style={{fontSize:16}}>{game.name}</Text>
 						<View
 							style={{
 								display: 'flex',
@@ -211,12 +211,13 @@ const GameTile = ({
 								/>
 								);
 							})}
-							<Button
-								style={{flexGrow:1}}
+							<TouchableOpacity
+								style={{flexGrow:1,display:'flex',alignItems:'center',justifyContent:'center',borderRadius:10, backgroundColor:'rgba(255,255,255,.5)'}}
 								title="Resume Game"
-								color="black"
 								onPress={() => navigation.navigate('LiveGame', { game, gameId: game.gameId })}
-								/>
+							>
+								<Text style={{}}>Resume Game</Text>
+							</TouchableOpacity>
 					</Animated.View>
 				</Animated.View>
 			</Pressable>

@@ -81,7 +81,6 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 				body,
 			}).unwrap();
 			if (newGame) {
-				console.log(newGame)
 				navigation.pop();
 				navigation.navigate('LiveGame', { game: newGame });
 			}
@@ -125,15 +124,16 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 	return (
 		<>
 			{isUpdating ? <LoadingModal /> : null}
-			<View style={{ flex: 1, gap: 8 }}>
+			<View style={{ flex: 1, flexDirection:'column', gap: 8, paddingHorizontal:10 }}>
 				<TextInput
 					style={{
 						width: '100%',
-						fontSize: 30,
+						fontSize: 20,
 						padding: 10,
 						alignSelf: 'center',
 						backgroundColor: 'white',
-						borderRadius: 20,
+						borderRadius: 10,
+						marginTop:8,
 					}}
 					value={name}
 					type="string"
@@ -143,58 +143,60 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 					inputGoal="text"
 					// autoFocus
 				/>
-				<Text style={{color: 'red', paddingHorizontal: 8, fontSize: 18}}>{errorMessage}</Text>
 				<View style={{ flex: 1 }}>
 					<ScrollView
 						style={{
 							display: 'flex',
 							flexDirection: 'column',
 							gap: 5,
-							padding: 5,
 							flex: 0,
 							flex: 1,
 						}}
 					>
-						<Text
-							style={{
-								fontSize: 22,
-								padding: 5,
-								paddingBottom: 15,
-							}}
-						>
-							Players
-						</Text>
-						{Object.entries(players).length > 0 && Object.entries(players).map(([key, player], index) => {
-							return (
-								<PlayerSelectTile
+						<View style={{display:'flex',gap:8}}>
+							<Text
+								style={{
+									fontSize: 18,
+								}}
+							>
+								Players
+							</Text>
+							{Object.entries(players).length > 0 && Object.entries(players).map(([key, player], index) => {
+								return (
+									<PlayerSelectTile
 									player={player}
 									key={key}
 									players={players}
 									setPlayers={setPlayers}
 									index={index}
-								/>
-							);
-						})}
-						<TextInput
-							style={{
-								fontSize: 18,
-								padding: 13,
-								backgroundColor: 'white',
-								borderRadius: 10,
-							}}
-							value={newPlayerName}
-							type="string"
-							placeholder="Player name"
-							onChangeText={setNewPlayerName}
-							inputGoal="text"
-							autoComplete="off"
-							autoCorrect={false}
-							enablesReturnKeyAutomatically={true}
-							onSubmitEditing={() => handleAddPlayer()}
-							blurOnSubmit={false}
-						/>
+									/>
+								);
+							})}
+							<TextInput
+								style={{
+									fontSize: 18,
+									padding: 13,
+									backgroundColor: 'white',
+									borderRadius: 10,
+								}}
+								value={newPlayerName}
+								type="string"
+								placeholder="Player name"
+								onChangeText={setNewPlayerName}
+								inputGoal="text"
+								autoComplete="off"
+								autoCorrect={false}
+								enablesReturnKeyAutomatically={true}
+								onSubmitEditing={handleAddPlayer}
+								blurOnSubmit={false}
+							/>
+						</View>
 					</ScrollView>
 				</View>
+				{errorMessage.length
+					? <Text style={{color: 'red', paddingHorizontal: 8, fontSize: 18}}>{errorMessage}</Text>
+					: null
+				}
 				<View style={{ display: 'flex', flexDirection: 'column', padding: 5 }}>
 					<View style={{ display: 'flex', flexDirection: 'row' }}>
 						<Text style={{ fontSize: 16, padding: 5 }}>Highest score wins</Text>
@@ -207,6 +209,7 @@ const NewGame = ({ showNewGame, setShowNewGame, navigation }) => {
 						/>
 					</View>
 				</View>
+				
 				<Button
 					title="Start Game"
 					color="white"

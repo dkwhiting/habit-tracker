@@ -41,13 +41,15 @@ function BottomNav({ setShowAuth }) {
 					tabBarShowLabel: false,
 					headerShown: false,
 					tabBarStyle: {
-						height: 90,
+						paddingTop: 10,
+						height: 68,
 					},
 				}}
 			>
 				<Tab.Screen
 					name="Dashboard"
 					children={() => <Dashboard />}
+					onPress={() => {}}
 					options={{
 						unmountOnBlur: true,
 						tabBarShowLabel: false,
@@ -58,7 +60,7 @@ function BottomNav({ setShowAuth }) {
 									name={'home'}
 									type={'material-community'}
 									color={focused ? 'rgb(239, 71, 111)' : '#BABABA'}
-									size={40}
+									size={30}
 								/>
 							</View>
 						),
@@ -76,7 +78,7 @@ function BottomNav({ setShowAuth }) {
 									name={'account-group'}
 									type={'material-community'}
 									color={focused ? 'rgb(239, 71, 111)' : '#BABABA'}
-									size={40}
+									size={30}
 								/>
 							</View>
 						),
@@ -98,7 +100,7 @@ function BottomNav({ setShowAuth }) {
 									name={'view-dashboard'}
 									type={'material-community'}
 									color={focused ? 'rgb(239, 71, 111)' : '#BABABA'}
-									size={40}
+									size={30}
 								/>
 							</View>
 						),
@@ -115,7 +117,7 @@ function BottomNav({ setShowAuth }) {
 									name={'cog'}
 									type={'material-community'}
 									color={focused ? 'rgb(239, 71, 111)' : '#BABABA'}
-									size={40}
+									size={30}
 								/>
 							</View>
 						),

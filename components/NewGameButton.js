@@ -21,8 +21,8 @@ const NewGameButton = () => {
 	return (
 		<Pressable
 			style={{
-				top: windowHeight - 115,
-				transform: [{ translateX: Dimensions.get('window').width / 2 - 45 }],
+				top: windowHeight - 85,
+				transform: [{ translateX: Dimensions.get('window').width / 2 - 35 }],
 				position: 'absolute',
 				zIndex: 999,
 			}}

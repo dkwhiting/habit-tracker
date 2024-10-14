@@ -11,7 +11,6 @@ const ScoreCell = ({game, roundKey, playerKey, style}) => {
         <TouchableOpacity 
             style={style}
             onPress={() => {
-                console.log('Navigating to ScoreEdit with ', game)
 				navigation.navigate('ScoreEdit', {game, roundKey, playerKey});
 			}}
         >

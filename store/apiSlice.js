@@ -23,7 +23,7 @@ const auth = getAuth();
 
 export const firestoreApi = createApi({
 	baseQuery: fakeBaseQuery(),
-	tagTypes: ['Games', 'User'],
+	tagTypes: ['Games', 'User', 'currentGame'],
 	endpoints: (builder) => ({
 		fetchAllGames: builder.query({
 			async queryFn(userId) {
@@ -194,7 +194,6 @@ export const firestoreApi = createApi({
 		  
 		updateRoundScore: builder.mutation({
 			async queryFn({ ownerId, gameId, playerKey, roundKey, newScore }) {
-				console.log()
 			  try {
 				// Get the document reference for the game
 				const gameDocRef = doc(db, 'users', ownerId, 'games', gameId);
@@ -223,6 +222,46 @@ export const firestoreApi = createApi({
 			},
 			invalidatesTags: ['currentGame'],
 		  }),
+			initializeNewRound: builder.mutation({
+				async queryFn( game ) {
+					try {
+					const {gameId, ownerId, players} = game
+					// Get the document reference for the game
+					const gameDocRef = doc(db, 'users', ownerId, 'games', gameId);
+
+					// Check if the game document exists
+					const gameDocSnap = await getDoc(gameDocRef);
+
+					if (!gameDocSnap.exists()) {
+					console.log('No such game!');
+					return { error: 'Game not found' };
+					}
+
+					const roundCount = Object.keys(game.scores).length;
+					const nextRoundKey = `round_${roundCount + 1}`;
+
+					// Initialize the new round's scores for all players
+					const newRoundScores = {};
+					Object.keys(players).forEach((playerKey) => {
+						newRoundScores[playerKey] = 0; // Initialize scores for each player
+					});
+
+					// Update the score for the specific player in the specified round
+					await updateDoc(gameDocRef, {
+					[`scores.${nextRoundKey}`]: newRoundScores
+					});
+
+					// Return the updated game data
+					const updatedGameData = (await getDoc(gameDocRef)).data();
+
+					return { data: updatedGameData };
+				} catch (error) {
+					console.error(error.message);
+					return { error: error.message };
+				}
+			},
+			invalidatesTags: ['currentGame'],
+		})
 	}),
 });
 
@@ -235,4 +274,5 @@ export const {
 	useRegisterUserMutation,
 	useUpdateUserMutation,
 	useUpdateRoundScoreMutation,
+	useInitializeNewRoundMutation,
 } = firestoreApi;

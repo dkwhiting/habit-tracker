@@ -11,14 +11,14 @@ const Tab = createBottomTabNavigator();
 
 const LiveGame = ({ route }) => {
 	const user = useContext(UserContext);
-	const gameId = route.params.gameId
+	const gameId = route.params.game.gameId
 	const {
 		data: game,
 		isError,
 		error,
-		isLoading: gamesLoading,
+		isLoading,
 	} = useFetchSingleGameQuery({userId: user.uid, gameId});
-	if (gamesLoading){
+	if (isLoading){
 		return (
 			<Text>Loading...</Text>
 		)
